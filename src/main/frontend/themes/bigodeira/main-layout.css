@@ -1,0 +1,22 @@
+vaadin-scroller[slot="drawer"] {
+    padding: 0.5rem;
+    background-color: #f8fafc;
+}
+
+vaadin-side-nav-item vaadin-icon {
+    padding: 0;
+}
+
+[slot="drawer"]:is(header) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    min-height: 3.5rem;
+    box-sizing: border-box;
+    background-color: #f8fafc;
+}
+
+[slot="drawer"]:is(header):is(:empty) {
+    display: none;
+}
