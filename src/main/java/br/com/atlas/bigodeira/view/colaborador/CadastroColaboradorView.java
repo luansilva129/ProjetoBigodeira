@@ -75,7 +75,7 @@ public class CadastroColaboradorView extends VerticalLayout {
             colaborador.setNome(nomeField.getValue());
             colaborador.setCpf(cpfField.getValue());
             colaborador.setEspecialidade(String.join(", ", especialidadeSelect.getValue()));
-            colaborador.setHorario(horaInicio.getValue()); // Usar LocalTime diretamente
+            colaborador.setHorario(horaInicio.getValue());
             colaborador.setDiasDaSemana(String.join(", ", diasSelect.getValue()));
 
             colaboradorService.save(colaborador);
