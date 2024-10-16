@@ -12,6 +12,7 @@ public class Cliente extends PessoaBase {
 
     private String email;
     private String senha;
+    private boolean primeiroAcesso = false;
 
 
 }

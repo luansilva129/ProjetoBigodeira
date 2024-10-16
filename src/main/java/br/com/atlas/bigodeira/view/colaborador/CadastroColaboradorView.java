@@ -15,7 +15,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,12 +28,14 @@ public class CadastroColaboradorView extends VerticalLayout {
     public CadastroColaboradorView(ColaboradorService colaboradorService) {
         this.colaboradorService = colaboradorService;
 
+        VerticalLayout verticalLayout = new VerticalLayout();
+
         setSizeFull();
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
+        setDefaultHorizontalComponentAlignment(Alignment.START);
+        setJustifyContentMode(JustifyContentMode.START);
+        setPadding(true);
 
         H2 titulo = new H2("Cadastro Colaborador");
-        titulo.getStyle().set("margin-bottom", "20px");
         titulo.getStyle().set("text-align", "left");
 
         TextField nomeField = new TextField("Nome");
@@ -48,25 +49,25 @@ public class CadastroColaboradorView extends VerticalLayout {
         especialidadeSelect.setItems("Barba", "Corte", "Sobrancelha");
         especialidadeSelect.setWidthFull();
 
-        HorizontalLayout horarioLayout = new HorizontalLayout();
-        horarioLayout.setWidthFull();
-
         TimePicker horaInicio = new TimePicker("Horário de Início");
+        horaInicio.setWidthFull();
+        horaInicio.setMinWidth("0px");
         TimePicker horaFim = new TimePicker("Horário de Fim");
-        horaInicio.setWidth("30%");
-        horaFim.setWidth("30%");
+        horaFim.setWidthFull();
+        horaFim.setMinWidth("0px");
 
         MultiSelectComboBox<String> diasSelect = new MultiSelectComboBox<>();
         diasSelect.setLabel("Dias Disponíveis");
         List<String> dias = Arrays.asList("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira");
         diasSelect.setItems(dias);
+        diasSelect.setWidthFull();
+        diasSelect.setMinWidth("0px");
 
         HorizontalLayout horarioDiasLayout = new HorizontalLayout(horaInicio, horaFim, diasSelect);
         horarioDiasLayout.setWidthFull();
         horarioDiasLayout.setSpacing(true);
 
         Button confirmarButton = new Button("Confirmar");
-        confirmarButton.getStyle().set("margin-top", "20px");
         confirmarButton.getStyle().set("align-self", "flex-start");
 
         confirmarButton.addClickListener(event -> {
@@ -89,8 +90,7 @@ public class CadastroColaboradorView extends VerticalLayout {
             diasSelect.clear();
         });
 
-        add(titulo, nomeField, cpfField, especialidadeSelect, horarioDiasLayout, confirmarButton);
-        setPadding(true);
-        getStyle().set("max-width", "600px");
+        verticalLayout.add(titulo, nomeField, cpfField, especialidadeSelect, horarioDiasLayout, confirmarButton);
+        add(verticalLayout);
     }
 }
