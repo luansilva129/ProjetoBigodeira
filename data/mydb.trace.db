@@ -1,0 +1,20 @@
+2024-10-15 22:18:10.269874-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "Drop[*]* FROM ENTIDADE_BASE"; expected "TABLE, INDEX, USER, SEQUENCE, CONSTANT, TRIGGER, MATERIALIZED, VIEW, ROLE, ALIAS, SCHEMA, ALL OBJECTS, DOMAIN, TYPE, AGGREGATE, SYNONYM"; SQL statement:
+Drop* FROM ENTIDADE_BASE [42001-224]
+2024-10-15 22:18:16.016675-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "Drop [*]* FROM ENTIDADE_BASE"; expected "TABLE, INDEX, USER, SEQUENCE, CONSTANT, TRIGGER, MATERIALIZED, VIEW, ROLE, ALIAS, SCHEMA, ALL OBJECTS, DOMAIN, TYPE, AGGREGATE, SYNONYM"; SQL statement:
+Drop * FROM ENTIDADE_BASE [42001-224]
+2024-10-15 22:18:37.012875-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete [*]* FROM ENTIDADE_BASE"; expected "identifier"; SQL statement:
+delete * FROM ENTIDADE_BASE [42001-224]
+2024-10-15 22:18:37.844198-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete [*]* FROM ENTIDADE_BASE"; expected "identifier"; SQL statement:
+delete * FROM ENTIDADE_BASE [42001-224]
+2024-10-15 22:19:51.526971-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM ENTIDADE_BASE \000d\000a\000d\000a[*]Set status from entidade_base = false"; SQL statement:
+SELECT * FROM ENTIDADE_BASE 
+
+Set status from entidade_base = false [42000-224]
+2024-10-15 22:19:59.084903-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "Set [*]status from entidade_base = false"; expected "@, AUTOCOMMIT, EXCLUSIVE, IGNORECASE, PASSWORD, SALT, MODE, DATABASE, COLLATION, CLUSTER, DATABASE_EVENT_LISTENER, ALLOW_LITERALS, DEFAULT_TABLE_TYPE, SCHEMA, CATALOG, SCHEMA_SEARCH_PATH, JAVA_OBJECT_SERIALIZER, IGNORE_CATALOGS, SESSION, TRANSACTION, TIME, NON_KEYWORDS, DEFAULT_NULL_ORDERING"; SQL statement:
+Set status from entidade_base = false [42001-224]

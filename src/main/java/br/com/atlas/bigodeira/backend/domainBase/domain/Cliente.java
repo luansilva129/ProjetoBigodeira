@@ -9,9 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Cliente extends PessoaBase {
-
     private String email;
     private String senha;
-
-
 }

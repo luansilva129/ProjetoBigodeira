@@ -25,7 +25,6 @@ public class AgendamentoService {
     }
 
 
-
     public void cancelarAgendamento(Long id) {
         Optional<AgendamentoBase> optionalAgendamento = agendamentoRepository.findById(id);
         if (optionalAgendamento.isPresent()) {

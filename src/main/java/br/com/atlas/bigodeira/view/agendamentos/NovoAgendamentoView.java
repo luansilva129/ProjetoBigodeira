@@ -74,7 +74,7 @@ public class NovoAgendamentoView extends VerticalLayout {
             if (colaborador == null || data == null || horario == null || servico == null || cliente == null) {
                 Notification.show("Por favor, preencha todos os campos!", 3000, Notification.Position.MIDDLE);
             } else {
-                AgendamentoBase agendamento = new AgendamentoBase(null, data, horario, servico, colaborador, cliente, false);
+                AgendamentoBase agendamento = new AgendamentoBase(data, horario, servico, colaborador, cliente, false);
                 agendamentoService.salvarAgendamento(agendamento);
 
                 Notification.show(

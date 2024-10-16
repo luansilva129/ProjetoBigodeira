@@ -13,13 +13,8 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Colaborador extends PessoaBase {
-
     private String especialidade;
     private LocalTime horario;
     private String diasDaSemana;
-
-
 }

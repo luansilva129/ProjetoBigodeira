@@ -16,9 +16,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class AgendamentoBase extends ServicosBase {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private LocalDate data;
     private LocalTime horario;
 
@@ -34,6 +31,4 @@ public class AgendamentoBase extends ServicosBase {
     private Cliente cliente;
 
     private Boolean status;
-
-
 }
