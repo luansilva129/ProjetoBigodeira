@@ -1,8 +1,12 @@
 package br.com.atlas.bigodeira.backend.domainBase;
 
+import jakarta.persistence.Entity;
+import jdk.jfr.Enabled;
+
+@Entity
 public class ServicosBase extends EntidadeBase {
 
-    private String id;
+    private Long id;
     private String nome;
     private String descricao;
 
