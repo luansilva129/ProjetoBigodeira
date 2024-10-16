@@ -22,7 +22,7 @@ import java.util.List;
 @Route(value = "cadastro-colaborador", layout = MainLayout.class)
 public class CadastroColaboradorView extends VerticalLayout {
 
-    private final ColaboradorService colaboradorService; // Serviço para acessar colaboradores
+    private final ColaboradorService colaboradorService;
 
     @Autowired
     public CadastroColaboradorView(ColaboradorService colaboradorService) {
