@@ -1,6 +1,7 @@
 package br.com.atlas.bigodeira.view.cadastroCliente;
 
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
+import br.com.atlas.bigodeira.backend.service.ClienteService;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
@@ -22,7 +23,11 @@ import com.vaadin.flow.router.Route;
 @Route(value = "cadastro-cliente", layout = MainLayout.class)
 public class CadastroClienteView extends Composite<VerticalLayout> {
 
-    public CadastroClienteView() {
+    private final ClienteService clienteService;
+
+    public CadastroClienteView(ClienteService clienteService) {
+        this.clienteService = clienteService;
+
         VerticalLayout layoutColumn2 = new VerticalLayout();
         H2 h2 = new H2();
 
@@ -82,6 +87,8 @@ public class CadastroClienteView extends Composite<VerticalLayout> {
             cliente.setEmail(emailField.getValue());
             cliente.setTelefone(estadoTelefone.getValue()+" "+numeroTelefone.getValue());
             cliente.setPrimeiroAcesso(true);
+
+            clienteService.save(cliente);
 
             Notification.show("Cliente cadastrado com sucesso!");
 
