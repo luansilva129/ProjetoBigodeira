@@ -1,12 +1,13 @@
 package br.com.atlas.bigodeira.view.agendamentos;
 
 import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
+import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
-import br.com.atlas.bigodeira.backend.domainBase.domain.TipoServico;
 import br.com.atlas.bigodeira.backend.service.AgendamentoService;
 import br.com.atlas.bigodeira.backend.service.ClienteService;
 import br.com.atlas.bigodeira.backend.service.ColaboradorService;
+import br.com.atlas.bigodeira.backend.service.ServicosService;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -28,12 +29,14 @@ public class NovoAgendamentoView extends VerticalLayout {
     private final ColaboradorService colaboradorService;
     private final AgendamentoService agendamentoService;
     private final ClienteService clienteService;
+    private final ServicosService servicosService;
 
     @Autowired
-    public NovoAgendamentoView(ColaboradorService colaboradorService, AgendamentoService agendamentoService, ClienteService clienteService) {
+    public NovoAgendamentoView(ColaboradorService colaboradorService, AgendamentoService agendamentoService, ClienteService clienteService, ServicosService servicosService) {
         this.colaboradorService = colaboradorService;
         this.agendamentoService = agendamentoService;
         this.clienteService = clienteService;
+        this.servicosService = servicosService;
         setupUI();
     }
 
@@ -54,8 +57,10 @@ public class NovoAgendamentoView extends VerticalLayout {
         );
         horarioComboBox.setWidthFull();
 
-        ComboBox<TipoServico> servicoComboBox = new ComboBox<>("Escolha o Tipo de Serviço");
-        servicoComboBox.setItems(TipoServico.values()); // Popula com todos os valores do enum
+        ComboBox<ServicosBase> servicoComboBox = new ComboBox<>("Escolha o Tipo de Serviço");
+        List<ServicosBase> servicos = servicosService.findAll();
+        servicoComboBox.setItems(servicos); // Alterado
+        servicoComboBox.setItemLabelGenerator(ServicosBase::getNome);
         servicoComboBox.setWidthFull();
 
         ComboBox<Cliente> clienteComboBox = new ComboBox<>("Selecione o Cliente");
@@ -68,7 +73,7 @@ public class NovoAgendamentoView extends VerticalLayout {
             Colaborador colaborador = colaboradorComboBox.getValue();
             LocalDate data = dataPicker.getValue();
             LocalTime horario = horarioComboBox.getValue();
-            TipoServico servico = servicoComboBox.getValue();
+            ServicosBase servico = servicoComboBox.getValue();
             Cliente cliente = clienteComboBox.getValue();
 
             if (colaborador == null || data == null || horario == null || servico == null || cliente == null) {
@@ -79,7 +84,7 @@ public class NovoAgendamentoView extends VerticalLayout {
 
                 Notification.show(
                         "Agendamento salvo para " + colaborador.getNome() +
-                                " em " + data + " às " + horario + " para " + servico +
+                                " em " + data + " às " + horario + " para " + servico.getNome() +
                                 " com o cliente " + cliente.getNome(),
                         3000, Notification.Position.MIDDLE);
                 clearFields(colaboradorComboBox, dataPicker, horarioComboBox, servicoComboBox, clienteComboBox);
@@ -94,7 +99,7 @@ public class NovoAgendamentoView extends VerticalLayout {
     }
 
     private void clearFields(ComboBox<Colaborador> colaboradorComboBox, DatePicker dataPicker,
-                             ComboBox<LocalTime> horarioComboBox, ComboBox<TipoServico> servicoComboBox, ComboBox<Cliente> clienteComboBox) {
+                             ComboBox<LocalTime> horarioComboBox, ComboBox<ServicosBase> servicoComboBox, ComboBox<Cliente> clienteComboBox) {
         colaboradorComboBox.clear();
         dataPicker.clear();
         horarioComboBox.clear();

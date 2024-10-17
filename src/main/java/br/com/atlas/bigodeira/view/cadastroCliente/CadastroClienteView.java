@@ -87,7 +87,6 @@ public class CadastroClienteView extends Composite<VerticalLayout> {
             cliente.setEmail(emailField.getValue());
             cliente.setTelefone(estadoTelefone.getValue()+" "+numeroTelefone.getValue());
 
-
             clienteService.save(cliente);
 
             Notification.show("Cliente cadastrado com sucesso!");

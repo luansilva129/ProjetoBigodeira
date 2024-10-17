@@ -19,8 +19,9 @@ public class AgendamentoBase extends ServicosBase {
     private LocalDate data;
     private LocalTime horario;
 
-    @Embedded
-    private TipoServico tipoServico;
+    @ManyToOne
+    @JoinColumn(name = "servicos_id")
+    private ServicosBase servicosBase;
 
     @ManyToOne
     @JoinColumn(name = "colaborador_id")
