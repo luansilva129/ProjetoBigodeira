@@ -1,15 +1,14 @@
 package br.com.atlas.bigodeira.view.servicos;
 
-import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
-import br.com.atlas.bigodeira.backend.service.ServicosRepository;
 import br.com.atlas.bigodeira.backend.service.ServicosService;
 import br.com.atlas.bigodeira.view.MainLayout;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -22,7 +21,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,14 +28,11 @@ import java.util.stream.Collectors;
 @Route(value = "servicos", layout = MainLayout.class)
 public class VisualizarServicosView extends VerticalLayout {
 
-    private static final List<ServicosBase> servicos = new ArrayList<>();
-
     private final Grid<ServicosBase> grid;
     private final ServicosService servicosService;
-    private final ServicosRepository servicosRepository;
 
     @Autowired
-    public VisualizarServicosView(ServicosService servicosService, ServicosRepository servicosRepository) {
+    public VisualizarServicosView(ServicosService servicosService) {
         this.servicosService = servicosService;
 
         HorizontalLayout headerLayout = new HorizontalLayout();
@@ -68,8 +63,8 @@ public class VisualizarServicosView extends VerticalLayout {
         loadServicos();
 
         add(grid);
-        this.servicosRepository = servicosRepository;
     }
+
     private void loadServicos() {
         List<ServicosBase> servicos = servicosService.findAll();
         grid.setItems(servicos);
@@ -81,15 +76,45 @@ public class VisualizarServicosView extends VerticalLayout {
                 ServicosBase::getPreco, NumberFormat.getCurrencyInstance()
         )).setHeader("Preço");
 
-        grid.addComponentColumn(ServicosBase ->{
-            Button excluir = new Button(VaadinIcon.TRASH.create(), event -> {
-                Long id = ServicosBase.getId();
-                    servicosService.delete(id);
-                    refreshGrid(grid);
-                    Notification.show("Excluido com sucesso!");
-            });
-            return excluir;
+        grid.addComponentColumn(servicosBase ->{
+            Icon lixeira = new Icon(VaadinIcon.TRASH);
+            lixeira.setColor("red");
+            Button abrirDialog = new Button(lixeira, event -> openDialog(servicosBase));
+            return abrirDialog;
         });
+    }
+
+    private void openDialog (ServicosBase servicosBase) {
+        Dialog dialog = new Dialog();
+
+        dialog.setHeaderTitle("Excluir serviço "+servicosBase.getNome()+"?");
+
+        dialog.add("O serviço será excluido permanentemente, tem certeza que deseja continuar?");
+
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setWidthFull();
+
+        Button excluir = new Button("Excluir", event -> {
+            try {
+                Long id = servicosBase.getId();
+                servicosService.delete(id);
+                refreshGrid(grid);
+                dialog.close();
+                Notification.show("Serviço excluido com sucesso!");
+            } catch (Exception e) {
+                Notification.show("Serviço vinculado à um agendamento, portanto não pode ser excluido!");
+            }
+        });
+        excluir.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+
+        Button cancelar = new Button("Cancelar", event -> dialog.close());
+        cancelar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        buttonLayout.add(excluir, cancelar);
+
+        dialog.getFooter().add(buttonLayout);
+
+        dialog.open();
     }
 
     private void filterGrid(String searchTerm) {
@@ -103,5 +128,3 @@ public class VisualizarServicosView extends VerticalLayout {
     private void refreshGrid(Grid<ServicosBase> grid) { grid.setItems(servicosService.findAll());
     }
 }
-
-
