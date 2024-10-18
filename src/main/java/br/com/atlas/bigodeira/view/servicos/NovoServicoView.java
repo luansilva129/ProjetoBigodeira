@@ -1,7 +1,11 @@
 package br.com.atlas.bigodeira.view.servicos;
 
+import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
+import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
+import br.com.atlas.bigodeira.backend.service.ServicosService;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -12,11 +16,16 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
+import java.util.StringJoiner;
+
 @PageTitle("Novo Serviço")
 @Route(value = "novo-servico", layout = MainLayout.class)
 public class NovoServicoView extends VerticalLayout {
 
-    public NovoServicoView() {
+    private final ServicosService servicosService;
+
+    public NovoServicoView(ServicosService servicosService) {
+        this.servicosService = servicosService;
 
         VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -38,9 +47,10 @@ public class NovoServicoView extends VerticalLayout {
         duracaoServico.setLabel("Duração (Em horas)");
         duracaoServico.setStep(0.5);
         duracaoServico.setValue(1.0);
+        duracaoServico.setMin(0.0);
+        duracaoServico.setMax(10.0);
         duracaoServico.setWidthFull();
         duracaoServico.setStepButtonsVisible(true);
-        add(duracaoServico);
 
         NumberField precoField = new NumberField("Preço");
         precoField.setWidthFull();
@@ -48,8 +58,6 @@ public class NovoServicoView extends VerticalLayout {
         Div realPrefix = new Div();
         realPrefix.setText("R$");
         precoField.setPrefixComponent(realPrefix);
-        precoField.setValue(0.0);
-        precoField.setStep(0.01);
         precoField.setMin(0.0);
         precoField.setMax(10000.0);
 
@@ -60,6 +68,32 @@ public class NovoServicoView extends VerticalLayout {
         Button confirmarButton = new Button("Confirmar");
         confirmarButton.getStyle().set("align-self", "flex-start");
         confirmarButton.getStyle().set("margin-top", "20px");
+
+        confirmarButton.addClickListener(event -> {
+                String nome = servicoField.getValue();
+                String descricao = descricaoField.getValue();
+                Double duracao = duracaoServico.getValue();
+                Double preco = precoField.getValue();
+
+                if (nome == null || descricao == null || duracao == null || preco == null) {
+                    Notification.show("Preencha todos os campos antes de continuar");
+                } else {
+                    ServicosBase servico = new ServicosBase();
+                    servico.setNome(nome);
+                    servico.setDescricao(descricao);
+                    servico.setDuracao(duracao);
+                    servico.setPreco(preco);
+
+                    servicosService.save(servico);
+
+                    Notification.show("Serviço criado com sucesso!");
+
+                    servicoField.clear();
+                    descricaoField.clear();
+                    duracaoServico.setValue(1.0);
+                    precoField.clear();
+                }
+        });
 
         verticalLayout.add(titulo, servicoField, descricaoField, DuracaoEPrecoLayout, confirmarButton);
         add(verticalLayout);
