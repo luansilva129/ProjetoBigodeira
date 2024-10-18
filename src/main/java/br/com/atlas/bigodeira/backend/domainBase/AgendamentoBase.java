@@ -26,7 +26,7 @@ public class AgendamentoBase extends EntidadeBase {
     @JoinColumn(name = "colaborador_id")
     private Colaborador colaborador;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
