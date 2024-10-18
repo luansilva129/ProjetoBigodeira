@@ -12,9 +12,8 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class AgendamentoBase extends ServicosBase {
+@Builder
+public class AgendamentoBase extends EntidadeBase {
 
     private LocalDate data;
     private LocalTime horario;
@@ -32,4 +31,18 @@ public class AgendamentoBase extends ServicosBase {
     private Cliente cliente;
 
     private Boolean status;
+
+
+    public AgendamentoBase(LocalDate data, LocalTime horario, ServicosBase servicosBase, Colaborador colaborador, Cliente cliente, Boolean status) {
+        this.data = data;
+        this.horario = horario;
+        this.servicosBase = servicosBase;
+        this.colaborador = colaborador;
+        this.cliente = cliente;
+        this.status = status;
+    }
+
+    public AgendamentoBase() {
+
+    }
 }

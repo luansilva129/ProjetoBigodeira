@@ -79,7 +79,11 @@ public class NovoAgendamentoView extends VerticalLayout {
             if (colaborador == null || data == null || horario == null || servico == null || cliente == null) {
                 Notification.show("Por favor, preencha todos os campos!", 3000, Notification.Position.MIDDLE);
             } else {
-                AgendamentoBase agendamento = new AgendamentoBase(data, horario, servico, colaborador, cliente, false);
+                // Buscar o serviço existente do banco de dados
+                ServicosBase servicoExistente = servicosService.findById(servico.getId())
+                        .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
+
+                AgendamentoBase agendamento = new AgendamentoBase(data, horario, servicoExistente, colaborador, cliente, false);
                 agendamentoService.salvarAgendamento(agendamento);
 
                 Notification.show(
