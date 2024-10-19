@@ -2,6 +2,7 @@ package br.com.atlas.bigodeira.backend.service;
 
 
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
+import br.com.atlas.bigodeira.backend.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,6 +2,7 @@ package br.com.atlas.bigodeira.backend.service;
 
 
 import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
+import br.com.atlas.bigodeira.backend.repository.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

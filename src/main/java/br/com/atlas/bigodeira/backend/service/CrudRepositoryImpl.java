@@ -1,10 +1,11 @@
 package br.com.atlas.bigodeira.backend.service;
 
 import br.com.atlas.bigodeira.backend.domainBase.EntidadeBase;
+import br.com.atlas.bigodeira.backend.repository.CrudRepositoryCustom;
 
 import java.util.Optional;
 
-public class CrudRepositoryImpl<EntityT extends EntidadeBase> implements CrudRepositoryCustom<EntityT>{
+public class CrudRepositoryImpl<EntityT extends EntidadeBase> implements CrudRepositoryCustom<EntityT> {
 
     @Override
     public <S extends EntityT> S save(S entity) {
