@@ -17,7 +17,5 @@ public class ColaboradorService {
         return colaboradorRepository.findAll();
     }
 
-    public void save(Colaborador colaborador) {
-        colaboradorRepository.save(colaborador);
-    }
+
 }

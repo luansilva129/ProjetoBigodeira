@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ServicosService extends CrudRepositoryImpl{
+public class ServiceBase extends CrudRepositoryImpl{
 
     @Autowired
     ServicosRepository servicosRepository;

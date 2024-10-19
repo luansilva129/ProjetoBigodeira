@@ -7,7 +7,7 @@ import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
 import br.com.atlas.bigodeira.backend.service.AgendamentoService;
 import br.com.atlas.bigodeira.backend.service.ClienteService;
 import br.com.atlas.bigodeira.backend.service.ColaboradorService;
-import br.com.atlas.bigodeira.backend.service.ServicosService;
+import br.com.atlas.bigodeira.backend.service.ServiceBase;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -29,14 +29,14 @@ public class NovoAgendamentoView extends VerticalLayout {
     private final ColaboradorService colaboradorService;
     private final AgendamentoService agendamentoService;
     private final ClienteService clienteService;
-    private final ServicosService servicosService;
+    private final ServiceBase serviceBase;
 
     @Autowired
-    public NovoAgendamentoView(ColaboradorService colaboradorService, AgendamentoService agendamentoService, ClienteService clienteService, ServicosService servicosService) {
+    public NovoAgendamentoView(ColaboradorService colaboradorService, AgendamentoService agendamentoService, ClienteService clienteService, ServiceBase serviceBase) {
         this.colaboradorService = colaboradorService;
         this.agendamentoService = agendamentoService;
         this.clienteService = clienteService;
-        this.servicosService = servicosService;
+        this.serviceBase = serviceBase;
         setupUI();
     }
 
@@ -58,7 +58,7 @@ public class NovoAgendamentoView extends VerticalLayout {
         horarioComboBox.setWidthFull();
 
         ComboBox<ServicosBase> servicoComboBox = new ComboBox<>("Escolha o Tipo de Serviço");
-        List<ServicosBase> servicos = servicosService.findAll();
+        List<ServicosBase> servicos = serviceBase.findAll();
         servicoComboBox.setItems(servicos); // Alterado
         servicoComboBox.setItemLabelGenerator(ServicosBase::getNome);
         servicoComboBox.setWidthFull();
@@ -80,7 +80,7 @@ public class NovoAgendamentoView extends VerticalLayout {
                 Notification.show("Por favor, preencha todos os campos!", 3000, Notification.Position.MIDDLE);
             } else {
                 // Buscar o serviço existente do banco de dados
-                ServicosBase servicoExistente = servicosService.findById(servico.getId())
+                ServicosBase servicoExistente = serviceBase.findById(servico.getId())
                         .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
                 AgendamentoBase agendamento = new AgendamentoBase(data, horario, servicoExistente, colaborador, cliente, false);

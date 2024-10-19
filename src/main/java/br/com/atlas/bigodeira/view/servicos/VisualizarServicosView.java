@@ -1,7 +1,7 @@
 package br.com.atlas.bigodeira.view.servicos;
 
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
-import br.com.atlas.bigodeira.backend.service.ServicosService;
+import br.com.atlas.bigodeira.backend.service.ServiceBase;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
 public class VisualizarServicosView extends VerticalLayout {
 
     private final Grid<ServicosBase> grid;
-    private final ServicosService servicosService;
+    private final ServiceBase serviceBase;
 
     @Autowired
-    public VisualizarServicosView(ServicosService servicosService) {
-        this.servicosService = servicosService;
+    public VisualizarServicosView(ServiceBase serviceBase) {
+        this.serviceBase = serviceBase;
 
         HorizontalLayout headerLayout = new HorizontalLayout();
 
@@ -66,7 +66,7 @@ public class VisualizarServicosView extends VerticalLayout {
     }
 
     private void loadServicos() {
-        List<ServicosBase> servicos = servicosService.findAll();
+        List<ServicosBase> servicos = serviceBase.findAll();
         grid.setItems(servicos);
 
         grid.addColumn(ServicosBase::getNome).setHeader("Serviços");
@@ -97,7 +97,7 @@ public class VisualizarServicosView extends VerticalLayout {
         Button excluir = new Button("Excluir", event -> {
             try {
                 Long id = servicosBase.getId();
-                servicosService.delete(id);
+                serviceBase.delete(id);
                 refreshGrid(grid);
                 dialog.close();
                 Notification.show("Serviço excluido com sucesso!");
@@ -118,13 +118,13 @@ public class VisualizarServicosView extends VerticalLayout {
     }
 
     private void filterGrid(String searchTerm) {
-        List<ServicosBase> filteredList = servicosService.findAll().stream()
+        List<ServicosBase> filteredList = serviceBase.findAll().stream()
                 .filter(servicosBase -> servicosBase.getNome().toLowerCase().contains(searchTerm.toLowerCase()))
                 .collect(Collectors.toList());
         grid.setItems(filteredList);
     }
 
     //Tamo junto Giovani
-    private void refreshGrid(Grid<ServicosBase> grid) { grid.setItems(servicosService.findAll());
+    private void refreshGrid(Grid<ServicosBase> grid) { grid.setItems(serviceBase.findAll());
     }
 }

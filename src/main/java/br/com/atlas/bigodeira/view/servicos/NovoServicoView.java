@@ -1,8 +1,7 @@
 package br.com.atlas.bigodeira.view.servicos;
 
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
-import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
-import br.com.atlas.bigodeira.backend.service.ServicosService;
+import br.com.atlas.bigodeira.backend.service.ServiceBase;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
@@ -16,16 +15,14 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
-import java.util.StringJoiner;
-
 @PageTitle("Novo Serviço")
 @Route(value = "novo-servico", layout = MainLayout.class)
 public class NovoServicoView extends VerticalLayout {
 
-    private final ServicosService servicosService;
+    private final ServiceBase serviceBase;
 
-    public NovoServicoView(ServicosService servicosService) {
-        this.servicosService = servicosService;
+    public NovoServicoView(ServiceBase serviceBase) {
+        this.serviceBase = serviceBase;
 
         VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -84,7 +81,7 @@ public class NovoServicoView extends VerticalLayout {
                     servico.setDuracao(duracao);
                     servico.setPreco(preco);
 
-                    servicosService.save(servico);
+                    serviceBase.save(servico);
 
                     Notification.show("Serviço criado com sucesso!");
 

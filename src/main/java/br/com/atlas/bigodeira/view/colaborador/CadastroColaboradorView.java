@@ -1,5 +1,6 @@
 package br.com.atlas.bigodeira.view.colaborador;
 
+import br.com.atlas.bigodeira.backend.controller.colaborador.ColaboradorController;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
 import br.com.atlas.bigodeira.backend.service.ColaboradorService; // Importar seu serviço de colaboradores
 import br.com.atlas.bigodeira.view.MainLayout;
@@ -23,9 +24,10 @@ import java.util.List;
 public class CadastroColaboradorView extends VerticalLayout {
 
     private final ColaboradorService colaboradorService;
+    private final ColaboradorController colaboradorController;
 
     @Autowired
-    public CadastroColaboradorView(ColaboradorService colaboradorService) {
+    public CadastroColaboradorView(ColaboradorService colaboradorService, ColaboradorController colaboradorController) {
         this.colaboradorService = colaboradorService;
 
         VerticalLayout verticalLayout = new VerticalLayout();
@@ -78,7 +80,7 @@ public class CadastroColaboradorView extends VerticalLayout {
             colaborador.setHorario(horaInicio.getValue());
             colaborador.setDiasDaSemana(String.join(", ", diasSelect.getValue()));
 
-            colaboradorService.save(colaborador);
+            colaboradorController.save(colaborador);
 
             Notification.show("Colaborador cadastrado com sucesso!");
 
@@ -92,5 +94,6 @@ public class CadastroColaboradorView extends VerticalLayout {
 
         verticalLayout.add(titulo, nomeField, cpfField, especialidadeSelect, horarioDiasLayout, confirmarButton);
         add(verticalLayout);
+        this.colaboradorController = colaboradorController;
     }
 }
