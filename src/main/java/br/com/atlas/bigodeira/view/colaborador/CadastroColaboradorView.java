@@ -80,7 +80,7 @@ public class CadastroColaboradorView extends VerticalLayout {
             colaborador.setHorario(horaInicio.getValue());
             colaborador.setDiasDaSemana(String.join(", ", diasSelect.getValue()));
 
-            colaboradorController.save(colaborador);
+            colaboradorController.salvarColaborador(colaborador);
 
             Notification.show("Colaborador cadastrado com sucesso!");
 
