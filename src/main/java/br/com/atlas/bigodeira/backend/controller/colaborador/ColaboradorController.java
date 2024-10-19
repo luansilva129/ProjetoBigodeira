@@ -22,8 +22,14 @@ public class ColaboradorController {
         return colaboradorService.findAll();
     }
 
-    public Colaborador save(Colaborador colaborador){
+    public Colaborador salvarColaborador (Colaborador colaborador){
         return colaboradorRepository.save(colaborador);
+    }
+
+    public void deleteColaborador (Colaborador colaborador){
+        if (colaboradorRepository != null){
+            colaboradorRepository.delete(colaborador);
+        }
     }
 
 }
