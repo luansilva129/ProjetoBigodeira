@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class ColaboradorController {
+public class CadastrarColaboradorController {
 
     private final ColaboradorRepository colaboradorRepository;
 
-    public ColaboradorController(ColaboradorRepository colaboradorRepository) {
+    public CadastrarColaboradorController(ColaboradorRepository colaboradorRepository) {
         this.colaboradorRepository = colaboradorRepository;
     }
 
@@ -31,5 +31,4 @@ public class ColaboradorController {
             colaboradorRepository.delete(colaborador);
         }
     }
-
 }
