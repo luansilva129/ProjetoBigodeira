@@ -3,6 +3,7 @@ package br.com.atlas.bigodeira.view.servicos;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
 import br.com.atlas.bigodeira.backend.service.ServiceBase;
 import br.com.atlas.bigodeira.view.MainLayout;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -63,7 +64,7 @@ public class NovoServicoView extends VerticalLayout {
         DuracaoEPrecoLayout.setSpacing(true);
 
         Button confirmarButton = new Button("Confirmar");
-        confirmarButton.getStyle().set("align-self", "flex-start");
+        confirmarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         confirmarButton.getStyle().set("margin-top", "20px");
 
         confirmarButton.addClickListener(event -> {

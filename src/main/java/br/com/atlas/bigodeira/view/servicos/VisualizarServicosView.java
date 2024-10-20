@@ -6,13 +6,16 @@ import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.router.PageTitle;
@@ -77,22 +80,99 @@ public class VisualizarServicosView extends VerticalLayout {
         )).setHeader("Preço");
 
         grid.addComponentColumn(servicosBase ->{
+            HorizontalLayout buttonsLayout = new HorizontalLayout();
+
+            Icon lapis = new Icon(VaadinIcon.PENCIL);
+            lapis.setColor("orange");
+            Button abrirEditar = new Button(lapis, event -> openDialogEditar(servicosBase));
+            abrirEditar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            buttonsLayout.add(abrirEditar);
+
             Icon lixeira = new Icon(VaadinIcon.TRASH);
             lixeira.setColor("red");
-            Button abrirDialog = new Button(lixeira, event -> openDialog(servicosBase));
-            return abrirDialog;
+            Button abrirExcluir = new Button(lixeira, event -> openDialogExcluir(servicosBase));
+            abrirExcluir.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            buttonsLayout.add(abrirExcluir);
+
+            return buttonsLayout;
         });
     }
 
-    private void openDialog (ServicosBase servicosBase) {
+    private void openDialogEditar(ServicosBase servicosBase) {
+        Dialog dialog = new Dialog();
+
+        dialog.setHeaderTitle("Editar Serviço "+servicosBase.getNome());
+
+        FormLayout editarInputsLayout = new FormLayout();
+        TextField servicoField = new TextField("Serviço");
+        servicoField.setValue(servicosBase.getNome());
+        editarInputsLayout.setColspan(servicoField, 2);
+
+        TextField descricaoField = new TextField("Descrição");
+        descricaoField.setValue(servicosBase.getDescricao());
+        editarInputsLayout.setColspan(descricaoField, 2);
+
+        NumberField duracaoServico = new NumberField("Duração (Em horas)");
+        duracaoServico.setValue(servicosBase.getDuracao());
+        duracaoServico.setStep(0.5);
+        duracaoServico.setMin(0.0);
+        duracaoServico.setMax(10.0);
+        duracaoServico.setStepButtonsVisible(true);
+
+        NumberField precoField = new NumberField("Preço");
+        precoField.setValue(servicosBase.getPreco());
+
+        Div realPrefix = new Div();
+        realPrefix.setText("R$");
+        precoField.setPrefixComponent(realPrefix);
+        precoField.setMin(0.0);
+        precoField.setMax(10000.0);
+
+        editarInputsLayout.add(servicoField, descricaoField, duracaoServico, precoField);
+        dialog.add(editarInputsLayout);
+
+        Button salvar = new Button("Salvar", event -> {
+            Long id = servicosBase.getId();
+            String nome = servicoField.getValue();
+            String descricao = descricaoField.getValue();
+            Double duracao = duracaoServico.getValue();
+            Double preco = precoField.getValue();
+
+            if (nome == null || descricao == null || duracao == null || preco == null) {
+                Notification.show("Preencha todos os campos antes de continuar");
+            } else {
+                ServicosBase servico = new ServicosBase();
+                servico.setId(id);
+                servico.setNome(nome);
+                servico.setDescricao(descricao);
+                servico.setDuracao(duracao);
+                servico.setPreco(preco);
+
+                serviceBase.save(servico);
+
+                refreshGrid(grid);
+                dialog.close();
+
+                Notification.show("Serviço editado com sucesso!");
+            }
+        });
+        salvar.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        salvar.getStyle().set("margin-right", "auto");
+
+        Button cancelar = new Button("Cancelar", event -> dialog.close());
+        cancelar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        dialog.getFooter().add(salvar, cancelar);
+
+        dialog.open();
+    }
+
+    private void openDialogExcluir(ServicosBase servicosBase) {
         Dialog dialog = new Dialog();
 
         dialog.setHeaderTitle("Excluir serviço "+servicosBase.getNome()+"?");
 
         dialog.add("O serviço será excluido permanentemente, tem certeza que deseja continuar?");
-
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setWidthFull();
 
         Button excluir = new Button("Excluir", event -> {
             try {
@@ -106,13 +186,12 @@ public class VisualizarServicosView extends VerticalLayout {
             }
         });
         excluir.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
+        excluir.getStyle().set("margin-right", "auto");
 
         Button cancelar = new Button("Cancelar", event -> dialog.close());
         cancelar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-        buttonLayout.add(excluir, cancelar);
-
-        dialog.getFooter().add(buttonLayout);
+        dialog.getFooter().add(excluir, cancelar);
 
         dialog.open();
     }
@@ -124,7 +203,6 @@ public class VisualizarServicosView extends VerticalLayout {
         grid.setItems(filteredList);
     }
 
-    //Tamo junto Giovani
     private void refreshGrid(Grid<ServicosBase> grid) { grid.setItems(serviceBase.findAll());
     }
 }
