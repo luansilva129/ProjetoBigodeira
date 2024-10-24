@@ -2,7 +2,6 @@ package br.com.atlas.bigodeira.backend.domainBase;
 
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
-import br.com.atlas.bigodeira.backend.domainBase.domain.TipoServico;
 import jakarta.persistence.*;
 import lombok.*;
 

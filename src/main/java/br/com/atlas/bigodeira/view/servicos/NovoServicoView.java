@@ -1,6 +1,8 @@
 package br.com.atlas.bigodeira.view.servicos;
 
+import br.com.atlas.bigodeira.backend.domainBase.AcessoBase;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
+import br.com.atlas.bigodeira.backend.service.AcessosService;
 import br.com.atlas.bigodeira.backend.service.ServiceBase;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,14 +18,18 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
+import java.time.LocalDateTime;
+
 @PageTitle("Novo Serviço")
 @Route(value = "novo-servico", layout = MainLayout.class)
 public class NovoServicoView extends VerticalLayout {
 
     private final ServiceBase serviceBase;
+    private final AcessosService acessosService;
 
-    public NovoServicoView(ServiceBase serviceBase) {
+    public NovoServicoView(ServiceBase serviceBase, AcessosService acessosService) {
         this.serviceBase = serviceBase;
+        this.acessosService = acessosService;
 
         VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -84,6 +90,8 @@ public class NovoServicoView extends VerticalLayout {
 
                     serviceBase.save(servico);
 
+                    registrarAcessos();
+
                     Notification.show("Serviço criado com sucesso!");
 
                     servicoField.clear();
@@ -95,5 +103,15 @@ public class NovoServicoView extends VerticalLayout {
 
         verticalLayout.add(titulo, servicoField, descricaoField, DuracaoEPrecoLayout, confirmarButton);
         add(verticalLayout);
+    }
+
+    public void registrarAcessos() {
+        AcessoBase acesso = new AcessoBase();
+
+        acesso.setCreateDate(LocalDateTime.now());
+        acesso.setAcao("Novo Serviço");
+        acesso.setStatus("CONCLUIDO");
+
+        acessosService.salvarAcesso(acesso);
     }
 }
