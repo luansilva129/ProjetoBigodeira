@@ -1,4 +1,4 @@
-package br.com.atlas.bigodeira.view.cadastroCliente;
+package br.com.atlas.bigodeira.view.cadastroUsuario;
 
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.service.ClienteService;
@@ -20,12 +20,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Cadastro Cliente")
-@Route(value = "cadastro-cliente", layout = MainLayout.class)
-public class CadastroClienteView extends Composite<VerticalLayout> {
+@Route(value = "cadastro/cliente", layout = MainLayout.class)
+public class CadastroUsuarioView extends Composite<VerticalLayout> {
 
     private final ClienteService clienteService;
 
-    public CadastroClienteView(ClienteService clienteService) {
+    public CadastroUsuarioView(ClienteService clienteService) {
         this.clienteService = clienteService;
 
         VerticalLayout layoutColumn2 = new VerticalLayout();

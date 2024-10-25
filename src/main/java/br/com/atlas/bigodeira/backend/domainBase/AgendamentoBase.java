@@ -33,6 +33,8 @@ public class AgendamentoBase extends EntidadeBase {
     private Boolean status;
 
 
+
+
     public AgendamentoBase(LocalDate data, LocalTime horario, ServicosBase servicosBase, Colaborador colaborador, Cliente cliente, Boolean status) {
         this.data = data;
         this.horario = horario;

@@ -7,6 +7,7 @@ import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -14,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("Agendamentos")
 @Route(value = "agendamentos", layout = MainLayout.class)
-public class VisualizarAgendamentosView extends VerticalLayout {
+public class  VisualizarAgendamentosView extends VerticalLayout {
 
     private final AgendamentoService agendamentoService;
 
@@ -36,40 +37,35 @@ public class VisualizarAgendamentosView extends VerticalLayout {
             return colaborador != null ? colaborador.getNome() : "Colaborador não disponível";
         }).setHeader("Colaborador");
 
-        grid.addColumn("status").setHeader("Status");
+        grid.addColumn(agendamento ->
+                agendamento.getStatus() ? "Confirmado" : "Pendente"
+        ).setHeader("Status");
 
-        grid.addComponentColumn(agendamentoBase -> {
-            Button confirmarButton = new Button("Confirmar", event -> {
-                Long id = agendamentoBase.getId();
+        grid.addComponentColumn(agendamento -> createActionButtons(agendamento, grid))
+                .setHeader("Ações");
 
-                    agendamentoService.confirmarAgendamento(id);
-                    refreshGrid(grid);
-                    Notification.show("Agendamento confirmado!", 3000, Notification.Position.MIDDLE);
-
-            });
-
-            Button cancelarButton = new Button("Cancelar", event -> {
-                Long id = agendamentoBase.getId();
-                if (id != null) {
-                    agendamentoService.cancelarAgendamento(id);
-                    refreshGrid(grid);
-                    Notification.show("Agendamento cancelado!", 3000, Notification.Position.MIDDLE);
-                } else {
-                    Notification.show("Erro: ID do agendamento é nulo!", 3000, Notification.Position.MIDDLE);
-                }
-            });
-
-            return new VerticalLayout(confirmarButton, cancelarButton);
-        }).setHeader("Ações");
-
-        // Adiciona o grid à view
         add(grid);
         setSpacing(true);
         setPadding(true);
         setWidth("100%");
     }
 
-    // Método para atualizar os itens do grid
+    private HorizontalLayout createActionButtons(AgendamentoBase agendamento, Grid<AgendamentoBase> grid) {
+        Button confirmarButton = new Button("Confirmar", event -> {
+            agendamentoService.confirmarAgendamento(agendamento.getId());
+            refreshGrid(grid);
+            Notification.show("Agendamento confirmado!", 3000, Notification.Position.MIDDLE);
+        });
+
+        Button cancelarButton = new Button("Cancelar", event -> {
+            agendamentoService.cancelarAgendamento(agendamento.getId());
+            refreshGrid(grid);
+            Notification.show("Agendamento cancelado!", 3000, Notification.Position.MIDDLE);
+        });
+
+        return new HorizontalLayout(confirmarButton, cancelarButton);
+    }
+
     private void refreshGrid(Grid<AgendamentoBase> grid) {
         grid.setItems(agendamentoService.findAllAgendamentos());
     }

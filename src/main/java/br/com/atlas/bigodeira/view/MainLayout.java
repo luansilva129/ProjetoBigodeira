@@ -3,7 +3,7 @@ package br.com.atlas.bigodeira.view;
 import br.com.atlas.bigodeira.view.acessos.AcessosView;
 import br.com.atlas.bigodeira.view.agendamentos.NovoAgendamentoView;
 import br.com.atlas.bigodeira.view.agendamentos.VisualizarAgendamentosView;
-import br.com.atlas.bigodeira.view.cadastroCliente.CadastroClienteView;
+import br.com.atlas.bigodeira.view.cadastroUsuario.CadastroUsuarioView;
 import br.com.atlas.bigodeira.view.colaborador.CadastroColaboradorView;
 import br.com.atlas.bigodeira.view.colaborador.VisualizarColaboradoresView;
 import br.com.atlas.bigodeira.view.home.HomeView;
@@ -61,10 +61,12 @@ public class MainLayout extends AppLayout {
         //Home / Dashboard
         nav.addItem(new SideNavItem("Home", HomeView.class, VaadinIcon.HOME.create()));
 
-        //Agendamentos
+
         SideNavItem agendamentosLink = new SideNavItem("Agendamentos");
         agendamentosLink.setPrefixComponent(VaadinIcon.CALENDAR.create());
-        //Novo Agendamento
+
+
+
         agendamentosLink.addItem(new SideNavItem("Novo Agendamento", NovoAgendamentoView.class, VaadinIcon.PLUS.create()));
         //Visualizar/Validar/Tabela Agendamentos
         agendamentosLink.addItem(new SideNavItem("Validar Agendamentos", VisualizarAgendamentosView.class, VaadinIcon.CHECK.create()));
@@ -83,7 +85,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(colaboradorLink);
 
         //Cadastro Cliente
-        nav.addItem(new SideNavItem("Cadastrar Cliente", CadastroClienteView.class, VaadinIcon.USERS.create()));
+        nav.addItem(new SideNavItem("Cadastrar Cliente", CadastroUsuarioView.class, VaadinIcon.USERS.create()));
 
         //Serviços
         SideNavItem servicosLink = new SideNavItem("Serviços");

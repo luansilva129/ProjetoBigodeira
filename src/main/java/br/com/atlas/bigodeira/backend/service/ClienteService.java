@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -18,7 +19,19 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
+
+
     public void save(Cliente cliente) {
         clienteRepository.save(cliente);
     }
+
+    public boolean autenticar(String email, String senha) {
+        Optional<Cliente> clienteOptional = clienteRepository.findByEmail(email);
+
+        return clienteOptional.isPresent() && clienteOptional.get().getSenha().equals(senha);
+    }
+
+
+
+
 }

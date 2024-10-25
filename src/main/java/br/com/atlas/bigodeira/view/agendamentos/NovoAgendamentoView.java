@@ -69,7 +69,7 @@ public class NovoAgendamentoView extends VerticalLayout {
         clienteComboBox.setItemLabelGenerator(Cliente::getNome);
         clienteComboBox.setWidthFull();
 
-        Button confirmarButton = new Button("Confirmar Agendamento", event -> {
+        Button confirmarButton = new Button("Confirmar", event -> {
             Colaborador colaborador = colaboradorComboBox.getValue();
             LocalDate data = dataPicker.getValue();
             LocalTime horario = horarioComboBox.getValue();
@@ -79,7 +79,7 @@ public class NovoAgendamentoView extends VerticalLayout {
             if (colaborador == null || data == null || horario == null || servico == null || cliente == null) {
                 Notification.show("Por favor, preencha todos os campos!", 3000, Notification.Position.MIDDLE);
             } else {
-                // Buscar o serviço existente do banco de dados
+
                 ServicosBase servicoExistente = serviceBase.findById(servico.getId())
                         .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
@@ -95,7 +95,7 @@ public class NovoAgendamentoView extends VerticalLayout {
             }
         });
 
-        add(colaboradorComboBox, dataPicker, horarioComboBox, servicoComboBox, clienteComboBox, confirmarButton);
+        add(clienteComboBox, servicoComboBox, colaboradorComboBox, dataPicker, horarioComboBox, confirmarButton);
         setSpacing(true);
         setPadding(true);
         setWidth("50%");
