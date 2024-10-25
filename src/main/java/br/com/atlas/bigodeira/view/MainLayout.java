@@ -73,7 +73,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(agendamentosLink);
 
         //Consulta Acessos
-        nav.addItem(new SideNavItem("Acessos", AcessosView.class, VaadinIcon.CLOCK.create()));
+        nav.addItem(new SideNavItem("Consultar Acessos", AcessosView.class, VaadinIcon.CLOCK.create()));
 
         //Colaborador
         SideNavItem colaboradorLink = new SideNavItem("Colaborador");

@@ -181,6 +181,7 @@ public class VisualizarServicosView extends VerticalLayout {
                 refreshGrid(grid);
                 dialog.close();
                 Notification.show("Serviço excluido com sucesso!");
+
             } catch (Exception e) {
                 Notification.show("Serviço vinculado à um agendamento, portanto não pode ser excluido!");
             }
@@ -206,3 +207,4 @@ public class VisualizarServicosView extends VerticalLayout {
     private void refreshGrid(Grid<ServicosBase> grid) { grid.setItems(serviceBase.findAll());
     }
 }
+
