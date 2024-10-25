@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AgendamentoService {
@@ -23,22 +22,5 @@ public class AgendamentoService {
 
     public List<AgendamentoBase> findAllAgendamentos() {
         return agendamentoRepository.findAll();
-    }
-
-
-    public void cancelarAgendamento(Long id) {
-        Optional<AgendamentoBase> optionalAgendamento = agendamentoRepository.findById(id);
-        if (optionalAgendamento.isPresent()) {
-            AgendamentoBase agendamento = optionalAgendamento.get();
-            agendamento.setStatus(false);
-            agendamentoRepository.save(agendamento);
-        } else {
-            throw new RuntimeException("Agendamento não encontrado com id: " + id);
-        }
-    }
-
-    public void confirmarAgendamento(Long id) {
-        AgendamentoBase agendamento = agendamentoRepository.findById(id).get();
-        agendamento.setStatus(true);
     }
 }

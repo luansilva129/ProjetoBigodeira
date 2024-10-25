@@ -70,15 +70,11 @@ public class AcessosView extends VerticalLayout {
             statusLayout.getStyle().setBorderRadius("8px");
             statusLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
-
             switch (acessoBase.getStatus()) {
                 case "CONCLUIDO":
                     statusLayout.getStyle().set("background-color", "#22C55E");
                     break;
-                case "EDITADO":
-                    statusLayout.getStyle().set("background-color", "#EFBF14");
-                    break;
-                case "EXCLUIDO":
+                case "CANCELADO":
                     statusLayout.getStyle().set("background-color", "#EB3B3B");
                     break;
                 default:

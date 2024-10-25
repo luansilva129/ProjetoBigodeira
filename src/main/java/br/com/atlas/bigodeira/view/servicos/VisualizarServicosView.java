@@ -1,8 +1,6 @@
 package br.com.atlas.bigodeira.view.servicos;
 
-import br.com.atlas.bigodeira.backend.domainBase.AcessoBase;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
-import br.com.atlas.bigodeira.backend.service.AcessosService;
 import br.com.atlas.bigodeira.backend.service.ServiceBase;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -26,7 +24,6 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.NumberFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,12 +33,10 @@ public class VisualizarServicosView extends VerticalLayout {
 
     private final Grid<ServicosBase> grid;
     private final ServiceBase serviceBase;
-    private final AcessosService acessosService;
 
     @Autowired
-    public VisualizarServicosView(ServiceBase serviceBase, AcessosService acessosService) {
+    public VisualizarServicosView(ServiceBase serviceBase) {
         this.serviceBase = serviceBase;
-        this.acessosService = acessosService;
 
         HorizontalLayout headerLayout = new HorizontalLayout();
 
@@ -155,8 +150,6 @@ public class VisualizarServicosView extends VerticalLayout {
 
                 serviceBase.save(servico);
 
-                registrarAcessos(id);
-
                 refreshGrid(grid);
                 dialog.close();
 
@@ -189,9 +182,6 @@ public class VisualizarServicosView extends VerticalLayout {
                 dialog.close();
                 Notification.show("Serviço excluido com sucesso!");
 
-                id = null;
-                registrarAcessos(id);
-
             } catch (Exception e) {
                 Notification.show("Serviço vinculado à um agendamento, portanto não pode ser excluido!");
             }
@@ -215,20 +205,6 @@ public class VisualizarServicosView extends VerticalLayout {
     }
 
     private void refreshGrid(Grid<ServicosBase> grid) { grid.setItems(serviceBase.findAll());
-    }
-
-    public void registrarAcessos(Long id) {
-        AcessoBase acesso = new AcessoBase();
-
-        acesso.setCreateDate(LocalDateTime.now());
-        acesso.setAcao("Alterar Serviço");
-        if (id == null) {
-            acesso.setStatus("EXCLUIDO");
-        } else {
-            acesso.setStatus("EDITADO");
-        }
-
-        acessosService.salvarAcesso(acesso);
     }
 }
 
