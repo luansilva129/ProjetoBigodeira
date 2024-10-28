@@ -23,19 +23,4 @@ public class AgendamentoService {
     public List<AgendamentoBase> findAllAgendamentos() {
         return agendamentoRepository.findAll();
     }
-
-
-    public void confirmarAgendamento(Long id) {
-        AgendamentoBase agendamento = agendamentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
-        agendamento.setStatus(true);
-        agendamentoRepository.save(agendamento);
-    }
-
-    public void cancelarAgendamento(Long id) {
-        AgendamentoBase agendamento = agendamentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
-        agendamento.setStatus(false);
-        agendamentoRepository.save(agendamento);
-    }
 }

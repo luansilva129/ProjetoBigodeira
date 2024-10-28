@@ -10,8 +10,11 @@ import br.com.atlas.bigodeira.backend.service.ColaboradorService;
 import br.com.atlas.bigodeira.backend.service.ServiceBase;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -69,7 +72,7 @@ public class NovoAgendamentoView extends VerticalLayout {
         clienteComboBox.setItemLabelGenerator(Cliente::getNome);
         clienteComboBox.setWidthFull();
 
-        Button confirmarButton = new Button("Confirmar", event -> {
+        Button confirmarButton = new Button("Confirmar Agendamento", event -> {
             Colaborador colaborador = colaboradorComboBox.getValue();
             LocalDate data = dataPicker.getValue();
             LocalTime horario = horarioComboBox.getValue();
@@ -79,11 +82,11 @@ public class NovoAgendamentoView extends VerticalLayout {
             if (colaborador == null || data == null || horario == null || servico == null || cliente == null) {
                 Notification.show("Por favor, preencha todos os campos!", 3000, Notification.Position.MIDDLE);
             } else {
-
+                // Buscar o serviço existente do banco de dados
                 ServicosBase servicoExistente = serviceBase.findById(servico.getId())
                         .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
 
-                AgendamentoBase agendamento = new AgendamentoBase(data, horario, servicoExistente, colaborador, cliente, false);
+                AgendamentoBase agendamento = new AgendamentoBase(data, horario, servicoExistente, colaborador, cliente, "AGUARDANDO");
                 agendamentoService.salvarAgendamento(agendamento);
 
                 Notification.show(
@@ -94,12 +97,23 @@ public class NovoAgendamentoView extends VerticalLayout {
                 clearFields(colaboradorComboBox, dataPicker, horarioComboBox, servicoComboBox, clienteComboBox);
             }
         });
+        confirmarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        add(clienteComboBox, servicoComboBox, colaboradorComboBox, dataPicker, horarioComboBox, confirmarButton);
+        H2 title = new H2("Insira as informações");
+
+        FormLayout formLayout = new FormLayout(clienteComboBox, servicoComboBox, colaboradorComboBox, dataPicker, horarioComboBox);
+        formLayout.setColspan(clienteComboBox, 2);
+        formLayout.setColspan(servicoComboBox, 2);
+        formLayout.setColspan(colaboradorComboBox, 2);
+
+        VerticalLayout novoAgendamentoLayout = new VerticalLayout(title, formLayout, confirmarButton);
+        novoAgendamentoLayout.setPadding(true);
+
+        add(novoAgendamentoLayout);
         setSpacing(true);
         setPadding(true);
-        setWidth("50%");
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+        setWidthFull();
+        setDefaultHorizontalComponentAlignment(Alignment.START);
     }
 
     private void clearFields(ComboBox<Colaborador> colaboradorComboBox, DatePicker dataPicker,

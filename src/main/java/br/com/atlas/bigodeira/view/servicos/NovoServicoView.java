@@ -68,29 +68,29 @@ public class NovoServicoView extends VerticalLayout {
         confirmarButton.getStyle().set("margin-top", "20px");
 
         confirmarButton.addClickListener(event -> {
-                String nome = servicoField.getValue();
-                String descricao = descricaoField.getValue();
-                Double duracao = duracaoServico.getValue();
-                Double preco = precoField.getValue();
+            String nome = servicoField.getValue();
+            String descricao = descricaoField.getValue();
+            Double duracao = duracaoServico.getValue();
+            Double preco = precoField.getValue();
 
-                if (nome == null || descricao == null || duracao == null || preco == null) {
-                    Notification.show("Preencha todos os campos antes de continuar");
-                } else {
-                    ServicosBase servico = new ServicosBase();
-                    servico.setNome(nome);
-                    servico.setDescricao(descricao);
-                    servico.setDuracao(duracao);
-                    servico.setPreco(preco);
+            if (nome == "" || descricao == "" || duracao == null || preco == null) {
+                Notification.show("Preencha todos os campos antes de continuar");
+            } else {
+                ServicosBase servico = new ServicosBase();
+                servico.setNome(nome);
+                servico.setDescricao(descricao);
+                servico.setDuracao(duracao);
+                servico.setPreco(preco);
 
-                    serviceBase.save(servico);
+                serviceBase.save(servico);
 
-                    Notification.show("Serviço criado com sucesso!");
+                Notification.show("Serviço criado com sucesso!");
 
-                    servicoField.clear();
-                    descricaoField.clear();
-                    duracaoServico.setValue(1.0);
-                    precoField.clear();
-                }
+                servicoField.clear();
+                descricaoField.clear();
+                duracaoServico.setValue(1.0);
+                precoField.clear();
+            }
         });
 
         verticalLayout.add(titulo, servicoField, descricaoField, DuracaoEPrecoLayout, confirmarButton);

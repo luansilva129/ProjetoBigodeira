@@ -207,4 +207,3 @@ public class VisualizarServicosView extends VerticalLayout {
     private void refreshGrid(Grid<ServicosBase> grid) { grid.setItems(serviceBase.findAll());
     }
 }
-

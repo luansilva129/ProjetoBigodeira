@@ -2,7 +2,6 @@ package br.com.atlas.bigodeira.backend.domainBase;
 
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
-import br.com.atlas.bigodeira.backend.domainBase.domain.TipoServico;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,12 +29,10 @@ public class AgendamentoBase extends EntidadeBase {
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
-    private Boolean status;
+    private String status;
 
 
-
-
-    public AgendamentoBase(LocalDate data, LocalTime horario, ServicosBase servicosBase, Colaborador colaborador, Cliente cliente, Boolean status) {
+    public AgendamentoBase(LocalDate data, LocalTime horario, ServicosBase servicosBase, Colaborador colaborador, Cliente cliente, String status) {
         this.data = data;
         this.horario = horario;
         this.servicosBase = servicosBase;
