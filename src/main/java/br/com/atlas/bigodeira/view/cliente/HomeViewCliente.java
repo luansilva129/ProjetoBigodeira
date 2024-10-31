@@ -110,8 +110,6 @@ public class HomeViewCliente extends VerticalLayout {
         add(layoutPrincipal);
     }
 
-
-
     private HorizontalLayout criarTextoComBotao() {
         // Título de boas-vindas
         H1 texto = new H1("Bem-vindo, Cliente!");
