@@ -17,4 +17,6 @@ public class Colaborador extends PessoaBase {
     private String especialidade;
     private LocalTime horario;
     private String diasDaSemana;
+
+
 }

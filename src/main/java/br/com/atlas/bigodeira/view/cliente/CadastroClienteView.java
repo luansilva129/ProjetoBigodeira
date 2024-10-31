@@ -1,12 +1,92 @@
 package br.com.atlas.bigodeira.view.cliente;
 
+import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
+import br.com.atlas.bigodeira.backend.service.ClienteService;
 import br.com.atlas.bigodeira.view.MainLayoutCliente;
+import com.vaadin.flow.component.KeyPressEvent;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "cliente/cadastroView", layout = MainLayoutCliente.class)
 @PageTitle("Cadastro - Cliente")
 public class CadastroClienteView extends VerticalLayout {
-    // Implementação do cadastro do cliente
+
+    private ClienteService clienteService;
+
+    private TextField nomeField;
+    private TextField emailField;
+    private PasswordField senhaField;
+    private Button cadastrarButton;
+    private TextField telefoneField;
+
+    @Autowired
+    public CadastroClienteView(ClienteService clienteService) {
+        this.clienteService = clienteService;
+        criarFormulario();
+    }
+
+    private void criarFormulario() {
+        nomeField = new TextField("Nome");
+        emailField = new TextField("Email");
+        senhaField = new PasswordField("Senha");
+        telefoneField = new TextField("Telefone");
+        telefoneField.setPlaceholder("(xx)xxxxx-xxxx");
+
+        telefoneField.addValueChangeListener(event -> {
+            String formattedValue = formatarTelefone(event.getValue());
+            telefoneField.setValue(formattedValue);
+        });
+
+        cadastrarButton = new Button("Cadastrar", event -> cadastrarCliente());
+
+        add(nomeField, emailField, senhaField, telefoneField, cadastrarButton);
+        setSpacing(true);
+        setPadding(true);
+    }
+
+    private String formatarTelefone(String value) {
+        String numbers = value.replaceAll("[^0-9]", "");
+
+        if (numbers.length() <= 2) {
+            return "(" + numbers;
+        } else if (numbers.length() <= 7) {
+            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2); // Adiciona DDD e espaço
+        } else {
+            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2, 7) + "-" + numbers.substring(7); // Adiciona a máscara completa
+        }
+    }
+
+    private void cadastrarCliente() {
+        String nome = nomeField.getValue();
+        String email = emailField.getValue();
+        String senha = senhaField.getValue();
+
+        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
+            Notification.show("Por favor, preencha todos os campos.", 3000, Notification.Position.MIDDLE);
+            return;
+        }
+        if (clienteService.emailExiste(email)) {
+            Notification.show("Um cliente com este email já existe.", 3000, Notification.Position.MIDDLE);
+            return;
+        }
+
+        Cliente cliente = new Cliente();
+        cliente.setNome(nome);
+        cliente.setEmail(email);
+        cliente.setSenha(senha);
+
+        clienteService.save(cliente);
+
+        Notification.show("Cliente cadastrado com sucesso!", 3000, Notification.Position.MIDDLE);
+        nomeField.clear();
+        emailField.clear();
+        senhaField.clear();
+        telefoneField.clear();
+    }
 }

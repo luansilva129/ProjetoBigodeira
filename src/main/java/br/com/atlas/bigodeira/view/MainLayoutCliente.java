@@ -1,5 +1,7 @@
 package br.com.atlas.bigodeira.view;
 
+import br.com.atlas.bigodeira.backend.service.AuthService;
+import br.com.atlas.bigodeira.view.cliente.CadastroClienteView;
 import br.com.atlas.bigodeira.view.cliente.HomeViewCliente;
 import br.com.atlas.bigodeira.view.cliente.NovoAgendamentoClienteView;
 import br.com.atlas.bigodeira.view.servicos.NovoServicoView;
@@ -13,9 +15,10 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-public class MainLayoutCliente extends AppLayout {
+public class MainLayoutCliente extends AppLayout implements RouterLayout {
 
     private H1 viewTitle;
 
@@ -50,7 +53,11 @@ public class MainLayoutCliente extends AppLayout {
 
         nav.addItem(new SideNavItem("Home", HomeViewCliente.class, VaadinIcon.HOME.create()));
 
-        nav.addItem(new SideNavItem("Agendar", NovoAgendamentoClienteView.class, VaadinIcon.EDIT.create()));
+        if (AuthService.isLoggedIn()) {
+            nav.addItem(new SideNavItem("Agendar", NovoAgendamentoClienteView.class, VaadinIcon.EDIT.create()));
+        }
+
+        nav.addItem(new SideNavItem("Cadastrar", CadastroClienteView.class, VaadinIcon.BOMB.create()));
 
         return nav;
     }
