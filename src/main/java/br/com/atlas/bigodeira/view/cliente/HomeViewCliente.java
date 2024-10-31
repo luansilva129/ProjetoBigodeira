@@ -3,42 +3,41 @@ package br.com.atlas.bigodeira.view.cliente;
 import br.com.atlas.bigodeira.backend.controller.cliente.ClienteController;
 import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
-import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.domainBase.domain.ClienteSession;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
 import br.com.atlas.bigodeira.backend.service.*;
 import br.com.atlas.bigodeira.view.MainLayoutCliente;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.Component;
+
 import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.virtuallist.VirtualList;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+
+import javax.swing.text.NumberFormatter;
+import java.text.NumberFormat;
 import java.util.List;
-import java.util.Optional;
 
 @Route(value = "cliente/home", layout = MainLayoutCliente.class)
 @PageTitle("Home/Cliente")
 @UIScope
-@Component
 public class HomeViewCliente extends VerticalLayout {
 
     @Autowired
@@ -80,11 +79,13 @@ public class HomeViewCliente extends VerticalLayout {
 
         layoutPrincipal.setSpacing(true);
         layoutPrincipal.setPadding(true);
+        layoutPrincipal.getStyle().set("padding", "40px");
 
         contentLayout = new VerticalLayout();
         contentLayout.setSizeFull();
 
         HorizontalLayout primeiraLinha = criarTextoComBotao();
+
         HorizontalLayout segundaLinha = criarLinhaComImagemEInformacoes();
 
         listaAgendamentos = new VerticalLayout();
@@ -92,7 +93,17 @@ public class HomeViewCliente extends VerticalLayout {
 
         Tabs tabs = criarMenuServicos();
 
-        layoutPrincipal.add(primeiraLinha, segundaLinha, listaAgendamentos, tabs, contentLayout);
+        HorizontalLayout terceiraLinha = new HorizontalLayout();
+        terceiraLinha.add(tabs);
+        terceiraLinha.addClassNames(LumoUtility.JustifyContent.CENTER,
+                LumoUtility.Gap.SMALL, LumoUtility.Height.MEDIUM,
+                LumoUtility.Width.FULL);
+
+        HorizontalLayout quartaLinha = new HorizontalLayout();
+        quartaLinha.add(listaAgendamentos, contentLayout);
+        quartaLinha.setWidthFull(); // Opcional: definir a largura total
+
+        layoutPrincipal.add(primeiraLinha, segundaLinha, terceiraLinha, quartaLinha);
 
         mostrarAgendamentosCliente();
 
@@ -102,52 +113,94 @@ public class HomeViewCliente extends VerticalLayout {
 
 
     private HorizontalLayout criarTextoComBotao() {
+        // Título de boas-vindas
         H1 texto = new H1("Bem-vindo, Cliente!");
+        texto.getStyle().set("color", "#333"); // Cor do texto
+        texto.getStyle().set("margin", "0"); // Remove margem padrão
+        texto.getStyle().set("padding", "0px 0"); // Adiciona padding vertical
+        texto.getStyle().set("font-weight", "bold"); // Deixa o texto em negrito
+        texto.getStyle().set("font-size", "45px"); // Aumenta o tamanho da fonte
 
-        Button actionButton;
-        if (clienteController.isClienteLogado()) {
-            actionButton = new Button("Sair", e -> clienteController.logout());
-        } else {
-            actionButton = new Button("Entrar", e -> abrirPopupLogin());
-        }
-
-        HorizontalLayout layout = new HorizontalLayout(texto, actionButton);
+        // Layout horizontal
+        HorizontalLayout layout = new HorizontalLayout(texto);
         layout.setWidthFull();
         layout.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        layout.setSpacing(false);
-        layout.setPadding(false);
+        layout.setPadding(false); // Adiciona padding ao layout
+        layout.getStyle().set("margin-left", "50px"); // Adiciona margem à direita da coluna da imagem
 
         return layout;
     }
 
 
     private HorizontalLayout criarLinhaComImagemEInformacoes() {
-
+        // Criar a imagem estática
         Image imagem = new Image("https://www.guiadasemana.com.br/contentFiles/image/2017/02/FEA/principal/49393_w840h0_1486764558shutterstock-barbearia.jpg", "Imagem de exemplo");
-        imagem.setWidth("90%");
-        imagem.setHeight("350px");
+        imagem.setWidth("100%");
+        imagem.setHeight("350px"); // Defina uma altura fixa
+        imagem.getStyle().set("border", "2px solid #ccc"); // Adiciona uma borda cinza
+        imagem.getStyle().set("border-radius", "8px"); // Arredonda os cantos
+        imagem.getStyle().set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.2)"); // Adiciona sombra
+        imagem.getStyle().set("transition", "transform 0.3s");
+        imagem.getStyle().set("cursor", "pointer");
+        imagem.getStyle().set("filter", "brightness(0.9)"); // Diminui um pouco o brilho
 
+        // Coluna para a imagem estática
         VerticalLayout colunaImagem = new VerticalLayout(imagem);
-        colunaImagem.setWidth("56%");
-        colunaImagem.setPadding(false);
-        colunaImagem.setSpacing(false);
+        colunaImagem.setWidth("100%"); // Ajuste conforme necessário
+        colunaImagem.setPadding(false); // Remover padding
+        colunaImagem.setSpacing(false); // Remover espaçamento
+        colunaImagem.setAlignItems(Alignment.CENTER); // Centraliza o conteúdo na coluna
 
+        // Criar a imagem do GIF
+        Image gifImage = new Image("pole3.gif", "GIF de exemplo");
+        gifImage.setWidth("30%"); // Ajuste a largura conforme necessário
+        gifImage.setHeight("150px"); // Defina uma altura fixa
+
+        // Coluna para o GIF e o card
+        VerticalLayout colunaCardGif = new VerticalLayout();
+        colunaCardGif.setWidth("50%"); // Largura da coluna do GIF e card
+        colunaCardGif.setPadding(false); // Remover padding
+
+        // Criar o card de informações
         VerticalLayout cardInformacoes = criarCardInformacoes();
-        cardInformacoes.setWidth("100%");
-        cardInformacoes.setHeight("100%");
+        cardInformacoes.setWidth("70%");
+        cardInformacoes.setHeight("350px"); // Defina uma altura fixa para o card também
 
-        VerticalLayout colunaCard = new VerticalLayout(cardInformacoes);
-        colunaCard.setWidth("30%");
-        colunaCard.setHeight("400px");
-        colunaCard.setAlignItems(Alignment.CENTER);
+        // Estilizar o card de informações
+        cardInformacoes.getStyle().set("background-color", "#f9f9f9"); // Cor de fundo leve
+        cardInformacoes.getStyle().set("border", "1px solid #ccc"); // Borda
+        cardInformacoes.getStyle().set("border-radius", "8px"); // Bordas arredondadas
+        cardInformacoes.getStyle().set("box-shadow", "0 2px 5px rgba(0, 0, 0, 0.1)"); // Sombra
+        cardInformacoes.getStyle().set("padding", "15px"); // Espaçamento interno
+        cardInformacoes.setAlignItems(Alignment.START); // Alinha o conteúdo no início
 
-        HorizontalLayout segundaLinha = new HorizontalLayout(colunaImagem, colunaCard);
+        // Adicionar o GIF e o card ao layout vertical
+        colunaCardGif.add(gifImage);
+        colunaCardGif.setSpacing(false); // Remover espaçamento entre o GIF e o card
+        colunaCardGif.setAlignItems(Alignment.END);
+
+        // Adicionar um espaçamento entre a coluna da imagem e a coluna do GIF e card
+        colunaCardGif.getStyle().set("margin-left", "20px"); // Ajuste a margem esquerda para criar espaçamento
+
+        // HorizontalLayout para a imagem e o card
+        HorizontalLayout segundaLinha = new HorizontalLayout(colunaImagem, colunaCardGif, cardInformacoes);
         segundaLinha.setWidthFull();
-        segundaLinha.setSpacing(true);
-        segundaLinha.setAlignItems(Alignment.CENTER);
+        segundaLinha.setAlignItems(Alignment.START); // Alinha no topo
+
+        // Definindo margens laterais
+        segundaLinha.setPadding(true);
+        segundaLinha.setMargin(true);
+        segundaLinha.getStyle().set("margin-left", "20px"); // Ajuste a margem esquerda
+        segundaLinha.getStyle().set("margin-right", "20px"); // Ajuste a margem direita
 
         return segundaLinha;
     }
+
+
+
+
+
+
 
     private VerticalLayout criarCardInformacoes() {
         VerticalLayout card = new VerticalLayout();
@@ -163,14 +216,14 @@ public class HomeViewCliente extends VerticalLayout {
 
         // Ícone de telefone + contato
         Icon telefoneIcon = new Icon("vaadin", "phone");
-        telefoneIcon.getStyle().set("margin-right", "2px"); // Espaço entre ícone e texto
+        telefoneIcon.getStyle().set("margin-right", "2px");
         telefoneIcon.setSize("15px");
 
         Span contatoTexto = new Span("Telefone: (11) 98765-4321");
         HorizontalLayout contatoLayout = new HorizontalLayout(telefoneIcon, contatoTexto);
         contatoLayout.setAlignItems(Alignment.CENTER);
 
-        // Adicionando componentes ao Card
+
         card.add(titulo, horario, horario2, horario3, horario4, texto, contatoLayout);
         card.getStyle().set("border", "1px solid #DDDDDD");
         card.getStyle().set("border-radius", "10px");
@@ -186,93 +239,93 @@ public class HomeViewCliente extends VerticalLayout {
         return paragrafo;
     }
 
+    private VirtualList<AgendamentoBase> virtualListAgendamentos;
+
     private void mostrarAgendamentosCliente() {
-
-        System.out.println("Aqui2");
         if (ClienteSession.isClienteLogado()) {
-            listaAgendamentos.removeAll();
-            System.out.println("Aqui3");
+            Long clienteLogadoId = ClienteSession.getClienteLogadoId();
+
             List<AgendamentoBase> agendamentos = ClienteSession.getAgendamentos();
-            System.out.println("Aqui4");
+            if (agendamentos == null || agendamentos.isEmpty()) {
 
-            if (agendamentos.isEmpty()) {
-                System.out.println("Aqui5");
-                Long clienteLogadoId = ClienteSession.getClienteLogadoId();
-                System.out.println("Aqui6");
                 agendamentos = agendamentoService.findByClienteId(clienteLogadoId);
-                System.out.println("Aqui7");
-
-                ClienteSession.setAgendamentos(agendamentos); // Armazena os agendamentos
-                System.out.println("Aqui8");
+                ClienteSession.setAgendamentos(agendamentos);
             }
 
-            for (AgendamentoBase agendamento : agendamentos) {
-                VerticalLayout cardAgendamento = criarCardAgendamento(agendamento);
-                listaAgendamentos.add(cardAgendamento);
+            if (virtualListAgendamentos == null) {
+                virtualListAgendamentos = new VirtualList<>();
+                virtualListAgendamentos.setRenderer(agendamentoCardRenderer);
+                listaAgendamentos.add(virtualListAgendamentos);
             }
 
-            listaAgendamentos.setVisible(true);
+            virtualListAgendamentos.setItems(agendamentos);
+            virtualListAgendamentos.setVisible(true);
         }
     }
 
+    private ComponentRenderer<Component, AgendamentoBase> agendamentoCardRenderer = new ComponentRenderer<>(
+            agendamento -> {
+                VerticalLayout cardLayout = new VerticalLayout();
+                cardLayout.setWidth("100%");
+                cardLayout.setPadding(false);
+                cardLayout.setMargin(false);
+                cardLayout.setSpacing(false);
+                cardLayout.getStyle().set("border", "1px solid #DDDDDD");
+                cardLayout.getStyle().set("border-radius", "10px");
+                cardLayout.getStyle().set("padding", "15px"); // Aumentar o padding
+                cardLayout.getStyle().set("box-shadow", "0 4px 10px rgba(0, 0, 0, 0.1)"); // Aumentar a sombra
+                cardLayout.getStyle().set("background-color", "#FAFAFA"); // Cor de fundo leve
+                cardLayout.getStyle().set("margin-bottom", "10px");
 
-    private VerticalLayout criarCardAgendamento(AgendamentoBase agendamento) {
-        VerticalLayout cardLayout = new VerticalLayout();
-        cardLayout.setWidth("30%");
-        cardLayout.setAlignItems(Alignment.CENTER);
-        cardLayout.setAlignSelf(Alignment.CENTER);
-        cardLayout.setPadding(false);
-        cardLayout.setMargin(false);
-        cardLayout.setSpacing(false);
-        cardLayout.getStyle().set("border", "1px solid #DDDDDD");
-        cardLayout.getStyle().set("border-radius", "10px");
-        cardLayout.getStyle().set("padding", "20px");
-        cardLayout.getStyle().set("box-shadow", "0 2px 5px rgba(0, 0, 0, 0.1)");
-        cardLayout.getStyle().set("background-color", "#FAFAFA"); // Cor de fundo leve
+                H4 titulo = new H4("Agendamento");
+                titulo.getStyle().set("margin", "0");
+                titulo.getStyle().set("color", "#4A4A4A"); // Cor do texto do título
+                cardLayout.add(titulo);
 
-        H4 titulo = new H4("Agendamento");
-        titulo.getStyle().set("margin", "0");
-        cardLayout.add(titulo);
+                VerticalLayout infoLayout = new VerticalLayout();
+                infoLayout.setPadding(false);
+                infoLayout.setSpacing(false);
 
-        // Layout para as informações do agendamento
-        VerticalLayout infoLayout = new VerticalLayout();
-        infoLayout.setPadding(false);
-        infoLayout.setSpacing(false);
+                if (agendamento != null) {
+                    infoLayout.add(criarLinhaInfo("Serviço: ", safeText(agendamento.getServicosBase())));
+                    infoLayout.add(criarLinhaInfo("Data: ", safeText(agendamento.getData())));
+                    infoLayout.add(criarLinhaInfo("Horário: ", safeText(agendamento.getHorario())));
+                    infoLayout.add(criarLinhaInfo("Colaborador: ", safeText(agendamento.getColaborador())));
+                    infoLayout.add(criarLinhaInfo("Status: ", safeText(agendamento.getStatus())));
 
+                } else {
+                    infoLayout.add(new Text("Nenhum agendamento encontrado."));
+                }
 
-        if (agendamento != null) {
-            infoLayout.add(criarLinhaInfo("Serviço", safeText(agendamento.getServicosBase())));
-            infoLayout.add(criarLinhaInfo("Data", safeText(agendamento.getData())));
-            infoLayout.add(criarLinhaInfo("Horário", safeText(agendamento.getHorario())));
-            infoLayout.add(criarLinhaInfo("Colaborador", safeText(agendamento.getColaborador())));
-            infoLayout.setAlignItems(Alignment.CENTER);
-        } else {
-            infoLayout.add(new Div(new Text("Nenhum agendamento encontrado.")));
-        }
+                // Adiciona estilo ao infoLayout
+                infoLayout.getStyle().set("padding", "15px");
+                infoLayout.getStyle().set("background-color", "#f9f9f9"); // Fundo leve
+                infoLayout.getStyle().set("border-radius", "8px"); // Bordas arredondadas
 
-        cardLayout.add(infoLayout);
-        return cardLayout;
-    }
-
+                cardLayout.add(infoLayout);
+                return cardLayout;
+            });
 
     private HorizontalLayout criarLinhaInfo(String label, String value) {
         HorizontalLayout linha = new HorizontalLayout();
         linha.setWidthFull();
-        linha.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        linha.setJustifyContentMode(JustifyContentMode.START);
         linha.setSpacing(false);
         linha.setMargin(false);
 
-        Span lblLabel = new Span(label + ":");
+        Span lblLabel = new Span(label);
         lblLabel.getStyle().set("font-weight", "bold");
+        lblLabel.getStyle().set("color", "#555"); // Cor do texto do label
+        lblLabel.getStyle().set("margin-right", "10px"); // Espaçamento à direita do label
 
         Span lblValue = new Span(value);
+        lblValue.getStyle().set("color", "#333"); // Cor do texto do valor
 
         linha.add(lblLabel, lblValue);
         return linha;
     }
 
 
-    // Método seguro para evitar null pointer
     private String safeText(Object value) {
         return value != null ? value.toString() : "Não disponível";
     }
@@ -315,28 +368,81 @@ public class HomeViewCliente extends VerticalLayout {
         Grid<ServicosBase> grid = new Grid<>(ServicosBase.class);
         grid.setItems(servicos);
         grid.removeAllColumns();
-        grid.addColumn(ServicosBase::getNome).setHeader("Nome do Serviço:").setSortable(true);
-        grid.addColumn(ServicosBase::getDescricao).setHeader("Descrição:").setSortable(true);
-        grid.addColumn(ServicosBase::getPreco).setHeader("Preço (R$)").setSortable(true);
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COMPACT);
 
+        // Estilizando o grid
+        grid.getElement().getStyle().set("border", "1px solid #DDDDDD");
+        grid.getElement().getStyle().set("border-radius", "8px"); // Bordas arredondadas
+        grid.getElement().getStyle().set("overflow", "hidden"); // Ocultar overflow
+
+        // Cabeçalhos estilizados
+        grid.addColumn(ServicosBase::getNome)
+                .setHeader("Nome do Serviço:")
+                .setSortable(true)
+                .setFlexGrow(1)
+                .setHeader(getHeader("Nome do Serviço:"));
+
+        grid.addColumn(ServicosBase::getDescricao)
+                .setHeader("Descrição:")
+                .setSortable(true)
+                .setFlexGrow(1)
+                .setHeader(getHeader("Descrição:"));
+
+        // Formatação de preços com NumberFormat
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+        grid.addColumn(new TextRenderer<>(servico -> currencyFormat.format(servico.getPreco())))
+                .setHeader("Preço (R$)")
+                .setSortable(true)
+                .setFlexGrow(1);
 
         contentLayout.add(grid);
     }
 
     private void mostrarColaboradores() {
-        List<Colaborador> colaboradores = colaboradorService.findAll(); // Busca colaboradores do banco
+        List<Colaborador> colaboradores = colaboradorService.findAll();
 
         Grid<Colaborador> grid = new Grid<>(Colaborador.class);
         grid.setItems(colaboradores);
         grid.removeAllColumns();
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COMPACT);
 
-        grid.addColumn(Colaborador::getNome).setHeader("Nome").setSortable(true);
-        grid.addColumn(Colaborador::getEspecialidade).setHeader("Especialidade").setSortable(true);
-        grid.addColumn(Colaborador::getHorario).setHeader("Horário Disponível").setSortable(true);
+        // Estilizando o grid
+        grid.getElement().getStyle().set("border", "1px solid #DDDDDD");
+        grid.getElement().getStyle().set("border-radius", "8px"); // Bordas arredondadas
+        grid.getElement().getStyle().set("overflow", "hidden"); // Ocultar overflow
+
+        // Cabeçalhos estilizados
+        grid.addColumn(Colaborador::getNome)
+                .setHeader("Nome")
+                .setSortable(true)
+                .setFlexGrow(1)
+                .setHeader(getHeader("Nome"));
+
+        grid.addColumn(Colaborador::getEspecialidade)
+                .setHeader("Especialidade")
+                .setSortable(true)
+                .setFlexGrow(1)
+                .setHeader(getHeader("Especialidade"));
+
+        grid.addColumn(Colaborador::getHorario)
+                .setHeader("Horário Disponível")
+                .setSortable(true)
+                .setFlexGrow(1)
+                .setHeader(getHeader("Horário Disponível"));
 
         contentLayout.add(grid);
     }
+
+    // Método para estilizar cabeçalhos
+    private Component getHeader(String text) {
+        Span span = new Span(text);
+        span.getElement().getStyle().set("font-weight", "bold"); // Texto em negrito
+        span.getElement().getStyle().set("color", "#333333"); // Cor do texto
+        span.getElement().getStyle().set("background-color", "#f8f9fa"); // Fundo do cabeçalho
+        span.getElement().getStyle().set("padding", "10px"); // Padding
+        return span;
+    }
+
 
 
     private void mostrarLocalizacao() {
@@ -345,62 +451,4 @@ public class HomeViewCliente extends VerticalLayout {
 
         contentLayout.add(mapaImagem);
     }
-
-    private void abrirPopupLogin() {
-        Dialog loginDialog = new Dialog();
-        loginDialog.setWidth("300px");
-        loginDialog.setHeight("300px");
-
-        VerticalLayout loginLayout = new VerticalLayout();
-        loginLayout.setSpacing(true);
-        loginLayout.setPadding(true);
-        loginLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-
-        TextField emailField = new TextField("Email");
-        emailField.setWidthFull();
-
-        PasswordField passwordField = new PasswordField("Senha");
-        passwordField.setWidthFull();
-
-        HorizontalLayout buttonLayout = getHorizontalLayout(emailField, passwordField, loginDialog);
-        buttonLayout.setSpacing(true);
-        buttonLayout.setJustifyContentMode(JustifyContentMode.END);
-
-        loginLayout.add(emailField, passwordField, buttonLayout);
-        loginDialog.add(loginLayout);
-
-        loginDialog.open();
-    }
-
-    private HorizontalLayout getHorizontalLayout(TextField emailField, PasswordField passwordField, Dialog loginDialog) {
-        Button loginButton = new Button("Entrar", event -> {
-            String email = emailField.getValue();
-            String senha = passwordField.getValue();
-
-            Optional<Cliente> clienteOptional = clienteService.findByEmail2(email);
-            if (clienteOptional.isPresent() && clienteService.autenticar(email, senha)) {
-                Cliente cliente = clienteOptional.get();
-                ClienteSession.setClienteLogadoId(cliente.getId());
-                ClienteSession.setClienteLogado(true);
-
-                AuthService.login();
-
-                Notification.show("Login realizado com sucesso!");
-
-                loginDialog.close();
-                UI.getCurrent().getPage().reload();
-                mostrarAgendamentosCliente();
-
-            } else {
-                Notification.show("Email ou senha inválidos.", 3000, Notification.Position.MIDDLE);
-            }
-        });
-
-        Button cancelButton = new Button("Cancelar", event -> loginDialog.close());
-
-        HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, cancelButton);
-        return buttonLayout;
-    }
-
-
 }

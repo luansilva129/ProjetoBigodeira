@@ -69,17 +69,18 @@ public class NovoAgendamentoClienteView extends VerticalLayout {
         servicoComboBox.setItemLabelGenerator(ServicosBase::getNome);
         servicoComboBox.setWidthFull();
 
-        // ComboBox do cliente
+
         ComboBox<Cliente> clienteComboBox = new ComboBox<>("Cliente");
-        Long clienteId = obterIdClienteLogado(); // Obtenha o ID do cliente logado
+        Long clienteId = obterIdClienteLogado();
 
         if (clienteId != null) {
             clienteService.findById(clienteId).ifPresent(cliente -> {
-                clienteComboBox.setItems(cliente); // Defina o cliente logado
-                clienteComboBox.setValue(cliente); // Selecione o cliente no ComboBox
-                clienteComboBox.setEnabled(false); // Desabilite para que o cliente não possa ser alterado
+                clienteComboBox.setItems(cliente);
+                clienteComboBox.setValue(cliente);
+                clienteComboBox.setEnabled(false);
             });
         } else {
+            clienteComboBox.setEnabled(false);
             Notification.show("Nenhum cliente logado. Por favor, faça login.", 3000, Notification.Position.MIDDLE);
         }
 
@@ -127,7 +128,6 @@ public class NovoAgendamentoClienteView extends VerticalLayout {
     }
 
     private Long obterIdClienteLogado() {
-        // Obtém o ID do cliente logado a partir da sessão
         return ClienteSession.getInstance().getClienteLogadoId();
     }
 

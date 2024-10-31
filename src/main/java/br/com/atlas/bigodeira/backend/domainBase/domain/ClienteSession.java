@@ -52,7 +52,7 @@ public class ClienteSession {
     }
 
     public static void logout() {
-        getSession().invalidate(); // Invalida a sessão
+        getSession().invalidate();
     }
 
     public static ClienteSession getInstance() {
@@ -62,7 +62,7 @@ public class ClienteSession {
         return instance;
     }
 
-    private static ClienteSession instance; // Adicione isso
+    private static ClienteSession instance;
 
 
 }

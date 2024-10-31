@@ -3,8 +3,10 @@ package br.com.atlas.bigodeira.view.cliente;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.service.ClienteService;
 import br.com.atlas.bigodeira.view.MainLayoutCliente;
-import com.vaadin.flow.component.KeyPressEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -18,17 +20,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CadastroClienteView extends VerticalLayout {
 
     private ClienteService clienteService;
-
     private TextField nomeField;
     private TextField emailField;
     private PasswordField senhaField;
-    private Button cadastrarButton;
     private TextField telefoneField;
+    private Button cadastrarButton;
 
     @Autowired
     public CadastroClienteView(ClienteService clienteService) {
         this.clienteService = clienteService;
         criarFormulario();
+
+        setSpacing(true);
+        setPadding(true);
+        setWidthFull();
+        setDefaultHorizontalComponentAlignment(Alignment.START);
     }
 
     private void criarFormulario() {
@@ -44,10 +50,19 @@ public class CadastroClienteView extends VerticalLayout {
         });
 
         cadastrarButton = new Button("Cadastrar", event -> cadastrarCliente());
+        cadastrarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        add(nomeField, emailField, senhaField, telefoneField, cadastrarButton);
-        setSpacing(true);
-        setPadding(true);
+        FormLayout formLayout = new FormLayout(nomeField, emailField, senhaField, telefoneField);
+        formLayout.setColspan(nomeField, 2);
+        formLayout.setColspan(emailField, 2);
+        formLayout.setColspan(senhaField, 2);
+        formLayout.setColspan(telefoneField, 2);
+
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(new H2("Insira as informações"), formLayout, cadastrarButton);
+        layout.setPadding(true);
+
+        add(layout);
     }
 
     private String formatarTelefone(String value) {
@@ -56,9 +71,9 @@ public class CadastroClienteView extends VerticalLayout {
         if (numbers.length() <= 2) {
             return "(" + numbers;
         } else if (numbers.length() <= 7) {
-            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2); // Adiciona DDD e espaço
+            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2);
         } else {
-            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2, 7) + "-" + numbers.substring(7); // Adiciona a máscara completa
+            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2, 7) + "-" + numbers.substring(7);
         }
     }
 
