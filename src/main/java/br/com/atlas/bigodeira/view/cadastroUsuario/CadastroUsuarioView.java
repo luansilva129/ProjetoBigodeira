@@ -20,7 +20,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @PageTitle("Cadastro Cliente")
-@Route(value = "cadastro/cliente", layout = MainLayout.class)
+@Route(value = "cadastro-cliente", layout = MainLayout.class)
 public class CadastroUsuarioView extends Composite<VerticalLayout> {
 
     private final ClienteService clienteService;
