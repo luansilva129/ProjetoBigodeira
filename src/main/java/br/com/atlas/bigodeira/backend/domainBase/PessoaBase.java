@@ -12,4 +12,9 @@ public class PessoaBase extends EntidadeBase {
     private String nome;
     private String cpf;
     private String telefone;
+
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

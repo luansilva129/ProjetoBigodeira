@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,4 +24,16 @@ public class AgendamentoService {
     public List<AgendamentoBase> findAllAgendamentos() {
         return agendamentoRepository.findAll();
     }
+
+    public void deleteByClienteId(Long clienteId) {
+        List<AgendamentoBase> agendamentos = agendamentoRepository.findByClienteId(clienteId);
+        agendamentoRepository.deleteAll(agendamentos);
+    }
+
+    public List<AgendamentoBase> findByClienteId(Long clienteId) {
+        return agendamentoRepository.findByClienteId(clienteId);
+    }
+
+
+
 }

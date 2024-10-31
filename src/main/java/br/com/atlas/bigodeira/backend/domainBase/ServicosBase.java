@@ -12,4 +12,9 @@ public class ServicosBase extends EntidadeBase {
     private String descricao;
     private Double duracao;
     private Double preco;
+
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

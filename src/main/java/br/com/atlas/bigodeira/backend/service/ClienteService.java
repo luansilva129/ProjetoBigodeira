@@ -15,11 +15,12 @@ public class ClienteService {
     @Autowired
     ClienteRepository clienteRepository;
 
+    @Autowired
+    AgendamentoService agendamentoService;
+
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
     }
-
-
 
     public void save(Cliente cliente) {
         clienteRepository.save(cliente);
@@ -27,11 +28,29 @@ public class ClienteService {
 
     public boolean autenticar(String email, String senha) {
         Optional<Cliente> clienteOptional = clienteRepository.findByEmail(email);
-
         return clienteOptional.isPresent() && clienteOptional.get().getSenha().equals(senha);
     }
 
+    public boolean emailExiste(String email) {
+        return clienteRepository.findByEmail(email).isPresent();
+    }
+
+    public void delete(Cliente cliente) {
+        agendamentoService.deleteByClienteId(cliente.getId());
+        clienteRepository.delete(cliente);
+    }
+
+    public Cliente findByEmail(String email) {
+        Optional<Cliente> clienteOptional = clienteRepository.findByEmail(email);
+        return clienteOptional.orElse(null);
+    }
+
+    public Optional<Cliente> findByEmail2(String email) {
+        return clienteRepository.findByEmail(email);
+    }
 
 
-
+    public Optional<Cliente> findById(Long clienteId) {
+        return clienteRepository.findById(clienteId);
+    }
 }
