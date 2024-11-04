@@ -10,7 +10,7 @@
     "@vaadin/common-frontend": "0.0.19",
     "@vaadin/polymer-legacy-adapter": "24.4.10",
     "@vaadin/react-components": "24.4.10",
-    "@vaadin/router": "1.7.5",
+    "@vaadin/router": "^2.0.0",
     "@vaadin/vaadin-development-mode-detector": "2.0.7",
     "@vaadin/vaadin-lumo-styles": "24.4.10",
     "@vaadin/vaadin-material-styles": "24.4.10",
@@ -31,6 +31,7 @@
     "@types/react-dom": "18.3.0",
     "@vitejs/plugin-react": "4.3.1",
     "async": "3.2.6",
+    "cypress": "^13.15.1",
     "glob": "10.4.5",
     "rollup-plugin-brotli": "3.1.0",
     "rollup-plugin-visualizer": "5.12.0",
@@ -85,7 +86,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "12de758ba4b064bca933a53e0b2c7131fc383f555ea7cbbad82e45c8b39838fc"
+    "hash": "100b7ab75cc365239cd1e02a3655938d6f1231f0c9947cf7aeaf0e0e7388b59b"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
