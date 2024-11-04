@@ -54,6 +54,7 @@ public class VisualizarAgendamentosView extends VerticalLayout {
         //Tabela Agendamentos
         grid = new Grid<>(AgendamentoBase.class, false);
         loadAgendamentos();
+        setHeight("80%");
 
         //Botões
         HorizontalLayout buttonsLayout = new HorizontalLayout();
@@ -84,9 +85,9 @@ public class VisualizarAgendamentosView extends VerticalLayout {
         grid.setItems(agendamentos);
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
 
-        grid.addColumn(agendamento -> agendamento.getCliente().getNome()).setHeader("Nome").setSortable(true);
-        grid.addColumn(agendamento -> agendamento.getServicosBase().getNome()).setHeader("Serviço").setSortable(true);
-        grid.addColumn(agendamento -> agendamento.getColaborador().getNome()).setHeader("Profissional Responsável").setSortable(true);
+        grid.addColumn(agendamento -> agendamento.getCliente().getNome()).setHeader("Nome").setSortable(true).setAutoWidth(true);
+        grid.addColumn(agendamento -> agendamento.getServicosBase().getNome()).setHeader("Serviço").setSortable(true).setAutoWidth(true);
+        grid.addColumn(agendamento -> agendamento.getColaborador().getNome()).setHeader("Profissional Responsável").setSortable(true).setAutoWidth(true);
 
         grid.addComponentColumn(agendamento -> {
             DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -98,7 +99,7 @@ public class VisualizarAgendamentosView extends VerticalLayout {
 
             String dataHora = formattedData+" "+hora;
             return new Span(dataHora);
-        }).setHeader("Data/Horário").setWidth("10rem").setFlexGrow(0);
+        }).setHeader("Data/Horário").setAutoWidth(true);
 
         grid.addComponentColumn(agendamento -> {
             HorizontalLayout statusLayout = new HorizontalLayout();
@@ -108,7 +109,7 @@ public class VisualizarAgendamentosView extends VerticalLayout {
             Span status = new Span(agendamento.getStatus());
             status.getStyle().setPadding("4px");
             status.getStyle().setColor("white");
-            status.setWidth("50%");
+            status.setMinWidth("125px");
             status.getStyle().setBorderRadius("8px");
 
             switch (agendamento.getStatus()) {
@@ -128,9 +129,9 @@ public class VisualizarAgendamentosView extends VerticalLayout {
             statusLayout.add(status);
 
             return statusLayout;
-        }).setHeader("Status").setSortable(true).setComparator(AgendamentoBase::getStatus).setTextAlign(ColumnTextAlign.CENTER).setWidth("15rem").setFlexGrow(0);
+        }).setHeader("Status").setSortable(true).setComparator(AgendamentoBase::getStatus).setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
 
-        grid.addColumn(agendamento -> agendamento.getCliente().getTelefone()).setHeader("Contato").setWidth("15rem").setFlexGrow(0);
+        grid.addColumn(agendamento -> agendamento.getCliente().getTelefone()).setHeader("Contato").setAutoWidth(true);
     }
 
     private void filterGrid(String searchTerm) {

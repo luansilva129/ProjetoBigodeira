@@ -30,8 +30,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-import javax.swing.text.NumberFormatter;
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -422,7 +420,7 @@ public class HomeViewCliente extends VerticalLayout {
                 .setFlexGrow(1)
                 .setHeader(getHeader("Especialidade"));
 
-        grid.addColumn(Colaborador::getHorario)
+        grid.addColumn(Colaborador::getHorarioInicio)
                 .setHeader("Horário Disponível")
                 .setSortable(true)
                 .setFlexGrow(1)

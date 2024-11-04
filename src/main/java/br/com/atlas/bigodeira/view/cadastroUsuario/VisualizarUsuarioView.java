@@ -43,6 +43,7 @@ public class VisualizarUsuarioView extends VerticalLayout {
 
         grid = new Grid<>(Cliente.class, false);
         loadCliente();
+        setHeight("80%");
 
         add(headerLayout, grid);
     }

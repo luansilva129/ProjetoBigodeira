@@ -36,6 +36,7 @@ public class AcessosView extends VerticalLayout {
 
         grid = new Grid<>(AcessoBase.class, false);
         loadAcessos();
+        setHeight("80%");
 
         add(grid);
 

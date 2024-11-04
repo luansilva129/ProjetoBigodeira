@@ -64,6 +64,7 @@ public class VisualizarServicosView extends VerticalLayout {
 
         grid = new Grid<>(ServicosBase.class, false);
         loadServicos();
+        setHeight("80%");
 
         add(grid);
     }
@@ -72,30 +73,29 @@ public class VisualizarServicosView extends VerticalLayout {
         List<ServicosBase> servicos = serviceBase.findAll();
         grid.setItems(servicos);
 
-        grid.addColumn(ServicosBase::getNome).setHeader("Serviços");
-        grid.addColumn(ServicosBase::getDescricao).setHeader("Descrição");
-        grid.addColumn(ServicosBase::getDuracao).setHeader("Duração");
+        grid.addColumn(ServicosBase::getNome).setHeader("Serviços").setAutoWidth(true).setSortable(true);
+        grid.addColumn(ServicosBase::getDescricao).setHeader("Descrição").setAutoWidth(true);
+        grid.addColumn(ServicosBase::getDuracao).setHeader("Duração").setAutoWidth(true);
         grid.addColumn(new NumberRenderer<>(
                 ServicosBase::getPreco, NumberFormat.getCurrencyInstance()
-        )).setHeader("Preço");
+        )).setHeader("Preço").setAutoWidth(true).setSortable(true).setComparator(ServicosBase::getPreco);
 
         grid.addComponentColumn(servicosBase ->{
-            HorizontalLayout buttonsLayout = new HorizontalLayout();
-
             Icon lapis = new Icon(VaadinIcon.PENCIL);
             lapis.setColor("orange");
             Button abrirEditar = new Button(lapis, event -> openDialogEditar(servicosBase));
             abrirEditar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            buttonsLayout.add(abrirEditar);
 
             Icon lixeira = new Icon(VaadinIcon.TRASH);
             lixeira.setColor("red");
             Button abrirExcluir = new Button(lixeira, event -> openDialogExcluir(servicosBase));
             abrirExcluir.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            buttonsLayout.add(abrirExcluir);
+
+            HorizontalLayout buttonsLayout = new HorizontalLayout(abrirEditar, abrirExcluir);
+            buttonsLayout.setJustifyContentMode(JustifyContentMode.END);
 
             return buttonsLayout;
-        });
+        }).setAutoWidth(true);
     }
 
     private void openDialogEditar(ServicosBase servicosBase) {
@@ -132,21 +132,15 @@ public class VisualizarServicosView extends VerticalLayout {
         dialog.add(editarInputsLayout);
 
         Button salvar = new Button("Salvar", event -> {
-            Long id = servicosBase.getId();
-            String nome = servicoField.getValue();
-            String descricao = descricaoField.getValue();
-            Double duracao = duracaoServico.getValue();
-            Double preco = precoField.getValue();
-
-            if (nome == null || descricao == null || duracao == null || preco == null) {
+            if (servicoField.isEmpty() || duracaoServico.isEmpty() || precoField.isEmpty()) {
                 Notification.show("Preencha todos os campos antes de continuar");
             } else {
                 ServicosBase servico = new ServicosBase();
-                servico.setId(id);
-                servico.setNome(nome);
-                servico.setDescricao(descricao);
-                servico.setDuracao(duracao);
-                servico.setPreco(preco);
+                servico.setId(servicosBase.getId());
+                servico.setNome(servicoField.getValue());
+                servico.setDescricao(descricaoField.getValue());
+                servico.setDuracao(duracaoServico.getValue());
+                servico.setPreco(precoField.getValue());
 
                 serviceBase.save(servico);
 

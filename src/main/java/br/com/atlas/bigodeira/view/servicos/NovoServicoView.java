@@ -68,19 +68,14 @@ public class NovoServicoView extends VerticalLayout {
         confirmarButton.getStyle().set("margin-top", "20px");
 
         confirmarButton.addClickListener(event -> {
-            String nome = servicoField.getValue();
-            String descricao = descricaoField.getValue();
-            Double duracao = duracaoServico.getValue();
-            Double preco = precoField.getValue();
-
-            if (nome == "" || descricao == "" || duracao == null || preco == null) {
+            if (servicoField.isEmpty() || duracaoServico.isEmpty() || precoField.isEmpty()) {
                 Notification.show("Preencha todos os campos antes de continuar");
             } else {
                 ServicosBase servico = new ServicosBase();
-                servico.setNome(nome);
-                servico.setDescricao(descricao);
-                servico.setDuracao(duracao);
-                servico.setPreco(preco);
+                servico.setNome(servicoField.getValue());
+                servico.setDescricao(descricaoField.getValue());
+                servico.setDuracao(duracaoServico.getValue());
+                servico.setPreco(precoField.getValue());
 
                 serviceBase.save(servico);
 

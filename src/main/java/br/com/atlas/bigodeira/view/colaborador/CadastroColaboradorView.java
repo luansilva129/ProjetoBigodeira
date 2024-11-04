@@ -1,10 +1,13 @@
 package br.com.atlas.bigodeira.view.colaborador;
 
 import br.com.atlas.bigodeira.backend.controller.colaborador.CadastrarColaboradorController;
+import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
 import br.com.atlas.bigodeira.backend.service.ColaboradorService; // Importar seu serviço de colaboradores
+import br.com.atlas.bigodeira.backend.service.ServicoService;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -15,7 +18,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Arrays;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @PageTitle("Cadastro Colaborador")
@@ -24,20 +28,15 @@ public class CadastroColaboradorView extends VerticalLayout {
 
     private final ColaboradorService colaboradorService;
     private final CadastrarColaboradorController cadastrarColaboradorController;
+    private final ServicoService servicoService;
 
     @Autowired
-    public CadastroColaboradorView(ColaboradorService colaboradorService, CadastrarColaboradorController cadastrarColaboradorController) {
+    public CadastroColaboradorView(ColaboradorService colaboradorService, CadastrarColaboradorController cadastrarColaboradorController, ServicoService servicoService) {
         this.colaboradorService = colaboradorService;
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-
-        setSizeFull();
-        setDefaultHorizontalComponentAlignment(Alignment.START);
-        setJustifyContentMode(JustifyContentMode.START);
-        setPadding(true);
+        this.cadastrarColaboradorController = cadastrarColaboradorController;
+        this.servicoService = servicoService;
 
         H2 titulo = new H2("Cadastro Colaborador");
-        titulo.getStyle().set("text-align", "left");
 
         TextField nomeField = new TextField("Nome");
         nomeField.setWidthFull();
@@ -55,53 +54,61 @@ public class CadastroColaboradorView extends VerticalLayout {
 
         MultiSelectComboBox<String> especialidadeSelect = new MultiSelectComboBox<>();
         especialidadeSelect.setLabel("Especialidades");
-        especialidadeSelect.setItems("Barba", "Corte", "Sobrancelha");
         especialidadeSelect.setWidthFull();
+
+        List<ServicosBase> servicos = servicoService.findAll();
+        List<String> nomeServicos = new ArrayList<>();
+        servicos.forEach(servico -> {
+            nomeServicos.add(servico.getNome());
+        });
+        especialidadeSelect.setItems(nomeServicos);
 
         TimePicker horaInicio = new TimePicker("Horário de Início");
         horaInicio.setWidthFull();
-        horaInicio.setMinWidth("0px");
+
         TimePicker horaFim = new TimePicker("Horário de Fim");
         horaFim.setWidthFull();
-        horaFim.setMinWidth("0px");
 
-        MultiSelectComboBox<String> diasSelect = new MultiSelectComboBox<>();
-        diasSelect.setLabel("Dias Disponíveis");
-        List<String> dias = Arrays.asList("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira");
-        diasSelect.setItems(dias);
+        MultiSelectComboBox<String> diasSelect = new MultiSelectComboBox<>("Dias Disponíveis");
+        diasSelect.setItems("Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira");
         diasSelect.setWidthFull();
-        diasSelect.setMinWidth("0px");
 
         HorizontalLayout horarioDiasLayout = new HorizontalLayout(horaInicio, horaFim, diasSelect);
         horarioDiasLayout.setWidthFull();
         horarioDiasLayout.setSpacing(true);
 
-        Button confirmarButton = new Button("Confirmar");
-        confirmarButton.getStyle().set("align-self", "flex-start");
+        Button cadastrarButton = new Button("Cadastrar");
+        cadastrarButton.getStyle().setMargin("20px 0px 4px");
+        cadastrarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        confirmarButton.addClickListener(event -> {
-            Colaborador colaborador = new Colaborador();
-            colaborador.setNome(nomeField.getValue());
-            colaborador.setCpf(cpfField.getValue());
-            colaborador.setEspecialidade(String.join(", ", especialidadeSelect.getValue()));
-            colaborador.setHorario(horaInicio.getValue());
-            colaborador.setDiasDaSemana(String.join(", ", diasSelect.getValue()));
+        cadastrarButton.addClickListener(event -> {
+            if (nomeField.isEmpty() || cpfField.isEmpty() || especialidadeSelect.isEmpty() || diasSelect.isEmpty()
+            || horaInicio.isEmpty() || horaFim.isEmpty()) {
+                Notification.show("Preencha todos os campos antes de continuar");
+            } else {
+                Colaborador colaborador = new Colaborador();
+                colaborador.setNome(nomeField.getValue());
+                colaborador.setCpf(cpfField.getValue());
+                colaborador.setEspecialidade(String.join(", ", especialidadeSelect.getValue()));
+                colaborador.setHorarioInicio(horaInicio.getValue());
+                colaborador.setHorarioFim(horaFim.getValue());
+                colaborador.setDiasDaSemana(String.join(", ", diasSelect.getValue()));
 
-            cadastrarColaboradorController.salvarColaborador(colaborador);
+                cadastrarColaboradorController.salvarColaborador(colaborador);
 
-            Notification.show("Colaborador cadastrado com sucesso!");
+                Notification.show("Colaborador cadastrado com sucesso!");
 
-            nomeField.clear();
-            cpfField.clear();
-            especialidadeSelect.clear();
-            horaInicio.clear();
-            horaFim.clear();
-            diasSelect.clear();
+                nomeField.clear();
+                cpfField.clear();
+                especialidadeSelect.clear();
+                horaInicio.clear();
+                horaFim.clear();
+                diasSelect.clear();
+            }
         });
 
-        verticalLayout.add(titulo, nomeField, cpfField, especialidadeSelect, horarioDiasLayout, confirmarButton);
+        VerticalLayout verticalLayout = new VerticalLayout(titulo, nomeField, cpfField, especialidadeSelect, horarioDiasLayout, cadastrarButton);
         add(verticalLayout);
-        this.cadastrarColaboradorController = cadastrarColaboradorController;
     }
 
     private String formatCpf(String value) {

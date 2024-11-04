@@ -3,12 +3,15 @@ package br.com.atlas.bigodeira.view.colaborador;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
 import br.com.atlas.bigodeira.backend.service.ColaboradorService;
 import br.com.atlas.bigodeira.view.MainLayout;
-import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -49,8 +52,9 @@ public class VisualizarColaboradoresView extends VerticalLayout {
 
         add(headerLayout);
 
-        grid = new Grid<>(Colaborador.class);
+        grid = new Grid<>(Colaborador.class, false);
         loadColaboradores();
+        setHeight("80%");
 
         add(grid);
     }
@@ -59,19 +63,38 @@ public class VisualizarColaboradoresView extends VerticalLayout {
         List<Colaborador> colaboradores = colaboradorService.findAll();
         grid.setItems(colaboradores);
 
-        grid.setColumns("nome", "especialidade", "diasDaSemana");
+        grid.addColumn(Colaborador::getNome).setHeader("Nome").setSortable(true).setAutoWidth(true);
+        grid.addColumn(Colaborador::getEspecialidade).setHeader("Especialidade").setAutoWidth(true);
+        grid.addColumn(Colaborador::getDiasDaSemana).setHeader("Dias Da Semana").setAutoWidth(true);
 
         grid.addColumn(colaborador ->
-                colaborador.getHorario() != null
-                        ? colaborador.getHorario().format(DateTimeFormatter.ofPattern("HH:mm"))
+                colaborador.getHorarioInicio() != null
+                        ? colaborador.getHorarioInicio().format(DateTimeFormatter.ofPattern("HH:mm"))
                         : "Horário não definido"
-        ).setHeader("Horário");
+        ).setHeader("Horário").setAutoWidth(true);
 
         grid.addComponentColumn(colaborador -> {
             Button button = new Button("Agendar");
             button.addClickListener(event -> openCalendarDialog(colaborador));
             return button;
-        }).setHeader("Agendamento");
+        }).setHeader("Agendamento").setAutoWidth(true);
+
+        grid.addComponentColumn(cliente ->{
+            Icon lapis = new Icon(VaadinIcon.PENCIL);
+            lapis.setColor("orange");
+            Button abrirEditar = new Button(lapis);
+            abrirEditar.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+            Icon lixeira = new Icon(VaadinIcon.TRASH);
+            lixeira.setColor("red");
+            Button abrirExcluir = new Button(lixeira);
+            abrirExcluir.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+            HorizontalLayout buttonsLayout = new HorizontalLayout(abrirEditar, abrirExcluir);
+            buttonsLayout.setJustifyContentMode(JustifyContentMode.END);
+
+            return buttonsLayout;
+        }).setAutoWidth(true);
     }
 
     private void filterGrid(String searchTerm) {
@@ -84,18 +107,16 @@ public class VisualizarColaboradoresView extends VerticalLayout {
     private void openCalendarDialog(Colaborador colaborador) {
         Dialog dialog = new Dialog();
 
-        VerticalLayout dialogLayout = new VerticalLayout();
-
-        dialogLayout.add(new com.vaadin.flow.component.html.H2("Agendar consulta com " + colaborador.getNome()));
+        H2 titulo = new H2("Agendar consulta com " + colaborador.getNome());
 
         DatePicker datePicker = new DatePicker("Escolha a data");
-        dialogLayout.add(datePicker);
+        datePicker.setWidthFull();
 
         ComboBox<LocalTime> timeComboBox = new ComboBox<>("Escolha o horário");
         timeComboBox.setItems(LocalTime.of(9, 0), LocalTime.of(10, 0), LocalTime.of(11, 0),
                 LocalTime.of(14, 0), LocalTime.of(15, 0), LocalTime.of(16, 0));
         timeComboBox.setItemLabelGenerator(time -> time.format(DateTimeFormatter.ofPattern("HH:mm")));
-        dialogLayout.add(timeComboBox);
+        timeComboBox.setWidthFull();
 
         Button confirmButton = new Button("Confirmar Agendamento");
         confirmButton.addClickListener(e -> {
@@ -105,11 +126,13 @@ public class VisualizarColaboradoresView extends VerticalLayout {
             Notification.show("Agendamento realizado para: " + colaborador.getNome() + " na data: " + selectedDate + " às " + formattedTime);
             dialog.close();
         });
-        dialogLayout.add(confirmButton);
+        confirmButton.getStyle().set("margin-right", "auto");
 
         Button cancelButton = new Button("Cancelar");
         cancelButton.addClickListener(e -> dialog.close());
-        dialogLayout.add(cancelButton);
+        VerticalLayout dialogLayout = new VerticalLayout(titulo, datePicker, timeComboBox);
+
+        dialog.getFooter().add(confirmButton, cancelButton);
 
         dialog.add(dialogLayout);
         dialog.open();

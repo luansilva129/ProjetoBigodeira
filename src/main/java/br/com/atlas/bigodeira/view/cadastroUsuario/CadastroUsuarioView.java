@@ -3,15 +3,11 @@ package br.com.atlas.bigodeira.view.cadastroUsuario;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.service.ClienteService;
 import br.com.atlas.bigodeira.view.MainLayout;
-import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -21,50 +17,33 @@ import com.vaadin.flow.router.Route;
 
 @PageTitle("Cadastro Cliente")
 @Route(value = "cadastro-cliente", layout = MainLayout.class)
-public class CadastroUsuarioView extends Composite<VerticalLayout> {
+public class CadastroUsuarioView extends VerticalLayout {
 
     private final ClienteService clienteService;
 
     public CadastroUsuarioView(ClienteService clienteService) {
         this.clienteService = clienteService;
 
-        VerticalLayout layoutColumn2 = new VerticalLayout();
-        H2 h2 = new H2();
+        H2 titulo = new H2("Insira as Informações");
 
-        FormLayout formLayout2Col = new FormLayout();
-        TextField nomeField = new TextField();
-        HorizontalLayout telefoneLayout = new HorizontalLayout();
-        ComboBox<String> estadoTelefone = new ComboBox<>();
-        TextField numeroTelefone = new TextField();
-        EmailField emailField = new EmailField();
+        TextField nomeField = new TextField("Nome");
+        EmailField emailField = new EmailField("Email");
 
-        Button buttonPrimary = new Button();
+        ComboBox<String> estadoTelefone = new ComboBox<>("Estado");
+        TextField numeroTelefone = new TextField("Telefone");
+        HorizontalLayout telefoneLayout = new HorizontalLayout(estadoTelefone, numeroTelefone);
 
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
-        getContent().setJustifyContentMode(JustifyContentMode.START);
-        getContent().setAlignItems(Alignment.START);
+        Button cadastrarButton = new Button("Cadastrar");
 
-        layoutColumn2.setWidth("100%");
-        layoutColumn2.setHeight("min-content");
+        VerticalLayout verticalLayout = new VerticalLayout(titulo, nomeField, emailField, telefoneLayout, cadastrarButton);
 
-        h2.setText("Insira as Informações");
-        h2.setWidth("100%");
+        nomeField.setWidthFull();
 
-        telefoneLayout.setAlignItems(Alignment.START);
-        telefoneLayout.setWidthFull();
-
-        formLayout2Col.setWidth("100%");
-        formLayout2Col.setColspan(nomeField, 2);
-        formLayout2Col.setColspan(numeroTelefone, 2);
-        formLayout2Col.setColspan(emailField, 2);
-
-        nomeField.setLabel("Nome");
-
-        emailField.setLabel("Email");
+        emailField.setWidthFull();
         emailField.setErrorMessage("Insira um e-mail válido");
 
-        estadoTelefone.setLabel("Estado");
+        telefoneLayout.setWidthFull();
+
         estadoTelefone.setItems("(84)", "(11)", "(12)", "(13)", "(14)",
                 "(15)", "(16)", "(17)", "(18)", "(19)");
         estadoTelefone.setValue("(84)");
@@ -72,37 +51,40 @@ public class CadastroUsuarioView extends Composite<VerticalLayout> {
         estadoTelefone.setMinWidth("80px");
         estadoTelefone.setAllowedCharPattern("[()0-9]");
 
-        numeroTelefone.setLabel("Telefone");
         numeroTelefone.setAllowedCharPattern("[0-9()+-]");
         numeroTelefone.setWidth("100%");
         numeroTelefone.setMaxLength(10);
 
-        buttonPrimary.setText("Cadastrar");
-        buttonPrimary.setWidth("min-content");
-        buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        cadastrarButton.setWidth("min-content");
+        cadastrarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        cadastrarButton.getStyle().setMargin("20px 0px 4px");
 
-        buttonPrimary.addClickListener(event -> {
-            Cliente cliente = new Cliente();
-            cliente.setNome(nomeField.getValue());
-            cliente.setEmail(emailField.getValue());
-            cliente.setTelefone(estadoTelefone.getValue()+" "+numeroTelefone.getValue());
+        cadastrarButton.addClickListener(event -> {
+            String nome = nomeField.getValue();
+            String email = emailField.getValue();
+            String telefone  = estadoTelefone.getValue()+" "+numeroTelefone.getValue();
 
-            clienteService.save(cliente);
+            if (nome.isEmpty() || email.isEmpty() || numeroTelefone.isEmpty()) {
+                Notification.show("Preencha todos os campos antes de continuar");
+            } else if (emailField.isInvalid()) {
+                Notification.show("E-mail inválido");
+            } else {
+                Cliente cliente = new Cliente();
+                cliente.setNome(nome);
+                cliente.setEmail(email);
+                cliente.setTelefone(telefone);
 
-            Notification.show("Cliente cadastrado com sucesso!");
+                clienteService.save(cliente);
 
-            nomeField.clear();
-            emailField.clear();
-            estadoTelefone.setValue("(84)");
-            numeroTelefone.clear();
+                Notification.show("Cliente cadastrado com sucesso!");
+
+                nomeField.clear();
+                emailField.clear();
+                estadoTelefone.setValue("(84)");
+                numeroTelefone.clear();
+            }
         });
 
-        telefoneLayout.add(estadoTelefone, numeroTelefone);
-
-        formLayout2Col.add(nomeField, emailField);
-
-        layoutColumn2.add(h2, formLayout2Col, telefoneLayout, buttonPrimary);
-
-        getContent().add(layoutColumn2);
+        add(verticalLayout);
     }
 }

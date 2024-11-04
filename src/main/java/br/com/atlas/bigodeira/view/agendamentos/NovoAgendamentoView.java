@@ -13,15 +13,14 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class NovoAgendamentoView extends VerticalLayout {
 
         ComboBox<ServicosBase> servicoComboBox = new ComboBox<>("Escolha o Tipo de Serviço");
         List<ServicosBase> servicos = serviceBase.findAll();
-        servicoComboBox.setItems(servicos); // Alterado
+        servicoComboBox.setItems(servicos);
         servicoComboBox.setItemLabelGenerator(ServicosBase::getNome);
         servicoComboBox.setWidthFull();
 
@@ -73,47 +72,34 @@ public class NovoAgendamentoView extends VerticalLayout {
         clienteComboBox.setWidthFull();
 
         Button confirmarButton = new Button("Confirmar Agendamento", event -> {
-            Colaborador colaborador = colaboradorComboBox.getValue();
-            LocalDate data = dataPicker.getValue();
-            LocalTime horario = horarioComboBox.getValue();
-            ServicosBase servico = servicoComboBox.getValue();
-            Cliente cliente = clienteComboBox.getValue();
-
-            if (colaborador == null || data == null || horario == null || servico == null || cliente == null) {
-                Notification.show("Por favor, preencha todos os campos!", 3000, Notification.Position.MIDDLE);
+            if (clienteComboBox.isEmpty() || servicoComboBox.isEmpty() || colaboradorComboBox.isEmpty()
+                    || dataPicker.isEmpty()  || horarioComboBox.isEmpty()) {
+                Notification.show("Por favor, preencha todos os campos!");
             } else {
-                // Buscar o serviço existente do banco de dados
-                ServicosBase servicoExistente = serviceBase.findById(servico.getId())
-                        .orElseThrow(() -> new RuntimeException("Serviço não encontrado"));
-
-                AgendamentoBase agendamento = new AgendamentoBase(data, horario, servicoExistente, colaborador, cliente, "AGUARDANDO");
+                AgendamentoBase agendamento = new AgendamentoBase(dataPicker.getValue(), horarioComboBox.getValue(),
+                        servicoComboBox.getValue(), colaboradorComboBox.getValue(), clienteComboBox.getValue(), "AGUARDANDO");
                 agendamentoService.salvarAgendamento(agendamento);
 
                 Notification.show(
-                        "Agendamento salvo para " + colaborador.getNome() +
-                                " em " + data + " às " + horario + " para " + servico.getNome() +
-                                " com o cliente " + cliente.getNome(),
-                        3000, Notification.Position.MIDDLE);
+                        "Agendamento salvo para " + colaboradorComboBox.getValue() +
+                                " no dia " + dataPicker.getValue() + " às " + horarioComboBox.getValue() + " para "
+                                + servicoComboBox.getValue() + " com o cliente " + clienteComboBox.getValue(),
+                        6000, Notification.Position.MIDDLE);
                 clearFields(colaboradorComboBox, dataPicker, horarioComboBox, servicoComboBox, clienteComboBox);
             }
         });
         confirmarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        confirmarButton.getStyle().setMargin("20px 0px 4px");
 
         H2 title = new H2("Insira as informações");
 
-        FormLayout formLayout = new FormLayout(clienteComboBox, servicoComboBox, colaboradorComboBox, dataPicker, horarioComboBox);
-        formLayout.setColspan(clienteComboBox, 2);
-        formLayout.setColspan(servicoComboBox, 2);
-        formLayout.setColspan(colaboradorComboBox, 2);
+        HorizontalLayout dataHoraLayout = new HorizontalLayout(dataPicker, horarioComboBox);
+        dataHoraLayout.setWidthFull();
 
-        VerticalLayout novoAgendamentoLayout = new VerticalLayout(title, formLayout, confirmarButton);
-        novoAgendamentoLayout.setPadding(true);
+        VerticalLayout novoAgendamentoLayout = new VerticalLayout(title, clienteComboBox, servicoComboBox,
+                colaboradorComboBox, dataHoraLayout, confirmarButton);
 
         add(novoAgendamentoLayout);
-        setSpacing(true);
-        setPadding(true);
-        setWidthFull();
-        setDefaultHorizontalComponentAlignment(Alignment.START);
     }
 
     private void clearFields(ComboBox<Colaborador> colaboradorComboBox, DatePicker dataPicker,
