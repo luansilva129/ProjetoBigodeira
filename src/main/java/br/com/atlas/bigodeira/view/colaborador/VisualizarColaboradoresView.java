@@ -35,20 +35,19 @@ public class VisualizarColaboradoresView extends VerticalLayout {
     public VisualizarColaboradoresView(ColaboradorService colaboradorService) {
         this.colaboradorService = colaboradorService;
 
-        HorizontalLayout headerLayout = new HorizontalLayout();
+        H2 titulo = new H2 ("Visualizar Colaborador");
 
-        headerLayout.add(new com.vaadin.flow.component.html.H2("Visualizar Colaborador"));
-
-        Button cadastrarButton = new Button("Cadastrar");
+        Button cadastrarButton = new Button("Cadastrar Colaborador");
         cadastrarButton.addClickListener(event -> {
             getUI().ifPresent(ui -> ui.navigate("cadastro-colaborador"));
         });
-        headerLayout.add(cadastrarButton);
+        cadastrarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         TextField searchField = new TextField();
         searchField.setPlaceholder("Pesquisar por nome");
         searchField.addValueChangeListener(event -> filterGrid(event.getValue()));
-        headerLayout.add(searchField);
+
+        HorizontalLayout headerLayout = new HorizontalLayout(titulo, cadastrarButton, searchField);
 
         add(headerLayout);
 

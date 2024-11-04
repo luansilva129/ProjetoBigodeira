@@ -67,7 +67,7 @@ public class CadastroUsuarioView extends VerticalLayout {
             if (nome.isEmpty() || email.isEmpty() || numeroTelefone.isEmpty()) {
                 Notification.show("Preencha todos os campos antes de continuar");
             } else if (emailField.isInvalid()) {
-                Notification.show("E-mail inválido");
+                Notification.show("O E-mail inserido é inválido");
             } else {
                 Cliente cliente = new Cliente();
                 cliente.setNome(nome);
