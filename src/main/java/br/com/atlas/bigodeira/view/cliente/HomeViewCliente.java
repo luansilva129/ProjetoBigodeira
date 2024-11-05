@@ -1,6 +1,5 @@
 package br.com.atlas.bigodeira.view.cliente;
 
-import br.com.atlas.bigodeira.backend.controller.cliente.ClienteController;
 import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
 import br.com.atlas.bigodeira.backend.domainBase.domain.ClienteSession;
@@ -38,35 +37,21 @@ import java.util.List;
 @UIScope
 public class HomeViewCliente extends VerticalLayout {
 
-    @Autowired
-    ServicoService servicoService;
 
-    @Autowired
-    ColaboradorService colaboradorService;
-
-    @Autowired
-    ClienteService clienteService;
-
-    @Autowired
-    ClienteController clienteController;
-
-    @Autowired
-    AgendamentoService agendamentoService;
-
+    private final ServicoService servicoService;
+    private final ColaboradorService colaboradorService;
+    private final AgendamentoService agendamentoService;
     private VerticalLayout contentLayout;
+
     private VerticalLayout listaAgendamentos;
 
 
     @Autowired
     public HomeViewCliente(ServicoService servicoService,
                            ColaboradorService colaboradorService,
-                           ClienteService clienteService,
-                           ClienteController clienteController,
                            AgendamentoService agendamentoService) {
         this.servicoService = servicoService;
         this.colaboradorService = colaboradorService;
-        this.clienteService = clienteService;
-        this.clienteController = clienteController;
         this.agendamentoService = agendamentoService;
 
         initLayout();
@@ -99,7 +84,7 @@ public class HomeViewCliente extends VerticalLayout {
 
         HorizontalLayout quartaLinha = new HorizontalLayout();
         quartaLinha.add(listaAgendamentos, contentLayout);
-        quartaLinha.setWidthFull(); // Opcional: definir a largura total
+        quartaLinha.setWidthFull();
 
         layoutPrincipal.add(primeiraLinha, segundaLinha, terceiraLinha, quartaLinha);
 
@@ -108,101 +93,87 @@ public class HomeViewCliente extends VerticalLayout {
         add(layoutPrincipal);
     }
 
-    private HorizontalLayout criarTextoComBotao() {
-        // Título de boas-vindas
-        H1 texto = new H1("Bem-vindo, Cliente!");
-        texto.getStyle().set("color", "#333"); // Cor do texto
-        texto.getStyle().set("margin", "0"); // Remove margem padrão
-        texto.getStyle().set("padding", "0px 0"); // Adiciona padding vertical
-        texto.getStyle().set("font-weight", "bold"); // Deixa o texto em negrito
-        texto.getStyle().set("font-size", "45px"); // Aumenta o tamanho da fonte
 
-        // Layout horizontal
+    private HorizontalLayout criarTextoComBotao() {
+
+        H1 texto = new H1("Bem-vindo, Cliente!");
+        texto.getStyle().set("color", "#333");
+        texto.getStyle().set("margin", "0");
+        texto.getStyle().set("padding", "0px 0");
+        texto.getStyle().set("font-weight", "bold");
+        texto.getStyle().set("font-size", "45px");
+
         HorizontalLayout layout = new HorizontalLayout(texto);
         layout.setWidthFull();
         layout.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        layout.setPadding(false); // Adiciona padding ao layout
-        layout.getStyle().set("margin-left", "50px"); // Adiciona margem à direita da coluna da imagem
+        layout.setPadding(false);
+        layout.getStyle().set("margin-left", "50px");
 
         return layout;
     }
 
 
     private HorizontalLayout criarLinhaComImagemEInformacoes() {
-        // Criar a imagem estática
+
         Image imagem = new Image("https://www.guiadasemana.com.br/contentFiles/image/2017/02/FEA/principal/49393_w840h0_1486764558shutterstock-barbearia.jpg", "Imagem de exemplo");
         imagem.setWidth("100%");
-        imagem.setHeight("350px"); // Defina uma altura fixa
-        imagem.getStyle().set("border", "2px solid #ccc"); // Adiciona uma borda cinza
-        imagem.getStyle().set("border-radius", "8px"); // Arredonda os cantos
-        imagem.getStyle().set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.2)"); // Adiciona sombra
+        imagem.setHeight("350px");
+        imagem.getStyle().set("border", "2px solid #ccc");
+        imagem.getStyle().set("border-radius", "8px");
+        imagem.getStyle().set("box-shadow", "0 4px 8px rgba(0, 0, 0, 0.2)");
         imagem.getStyle().set("transition", "transform 0.3s");
         imagem.getStyle().set("cursor", "pointer");
-        imagem.getStyle().set("filter", "brightness(0.9)"); // Diminui um pouco o brilho
+        imagem.getStyle().set("filter", "brightness(0.9)");
 
-        // Coluna para a imagem estática
+
         VerticalLayout colunaImagem = new VerticalLayout(imagem);
-        colunaImagem.setWidth("100%"); // Ajuste conforme necessário
-        colunaImagem.setPadding(false); // Remover padding
-        colunaImagem.setSpacing(false); // Remover espaçamento
-        colunaImagem.setAlignItems(Alignment.CENTER); // Centraliza o conteúdo na coluna
+        colunaImagem.setWidth("100%");
+        colunaImagem.setPadding(false);
+        colunaImagem.setSpacing(false);
+        colunaImagem.setAlignItems(Alignment.CENTER);
 
-        // Criar a imagem do GIF
         Image gifImage = new Image("pole3.gif", "GIF de exemplo");
-        gifImage.setWidth("30%"); // Ajuste a largura conforme necessário
-        gifImage.setHeight("150px"); // Defina uma altura fixa
+        gifImage.setWidth("20%");
+        gifImage.setHeight("130px");
 
-        // Coluna para o GIF e o card
         VerticalLayout colunaCardGif = new VerticalLayout();
-        colunaCardGif.setWidth("50%"); // Largura da coluna do GIF e card
-        colunaCardGif.setPadding(false); // Remover padding
+        colunaCardGif.setWidth("50%");
+        colunaCardGif.setPadding(false);
 
-        // Criar o card de informações
         VerticalLayout cardInformacoes = criarCardInformacoes();
         cardInformacoes.setWidth("70%");
-        cardInformacoes.setHeight("350px"); // Defina uma altura fixa para o card também
+        cardInformacoes.setHeight("350px");
 
-        // Estilizar o card de informações
-        cardInformacoes.getStyle().set("background-color", "#f9f9f9"); // Cor de fundo leve
-        cardInformacoes.getStyle().set("border", "1px solid #ccc"); // Borda
-        cardInformacoes.getStyle().set("border-radius", "8px"); // Bordas arredondadas
-        cardInformacoes.getStyle().set("box-shadow", "0 2px 5px rgba(0, 0, 0, 0.1)"); // Sombra
-        cardInformacoes.getStyle().set("padding", "15px"); // Espaçamento interno
-        cardInformacoes.setAlignItems(Alignment.START); // Alinha o conteúdo no início
+        cardInformacoes.getStyle().set("background-color", "#f9f9f9");
+        cardInformacoes.getStyle().set("border", "1px solid #ccc");
+        cardInformacoes.getStyle().set("border-radius", "8px");
+        cardInformacoes.getStyle().set("box-shadow", "0 2px 5px rgba(0, 0, 0, 0.1)");
+        cardInformacoes.getStyle().set("padding", "15px");
+        cardInformacoes.setAlignItems(Alignment.START);
 
-        // Adicionar o GIF e o card ao layout vertical
         colunaCardGif.add(gifImage);
-        colunaCardGif.setSpacing(false); // Remover espaçamento entre o GIF e o card
+        colunaCardGif.setSpacing(false);
         colunaCardGif.setAlignItems(Alignment.END);
 
-        // Adicionar um espaçamento entre a coluna da imagem e a coluna do GIF e card
-        colunaCardGif.getStyle().set("margin-left", "20px"); // Ajuste a margem esquerda para criar espaçamento
+        colunaCardGif.getStyle().set("margin-left", "20px");
 
-        // HorizontalLayout para a imagem e o card
         HorizontalLayout segundaLinha = new HorizontalLayout(colunaImagem, colunaCardGif, cardInformacoes);
         segundaLinha.setWidthFull();
-        segundaLinha.setAlignItems(Alignment.START); // Alinha no topo
+        segundaLinha.setAlignItems(Alignment.START);
 
-        // Definindo margens laterais
         segundaLinha.setPadding(true);
         segundaLinha.setMargin(true);
-        segundaLinha.getStyle().set("margin-left", "20px"); // Ajuste a margem esquerda
-        segundaLinha.getStyle().set("margin-right", "20px"); // Ajuste a margem direita
+        segundaLinha.getStyle().set("margin-left", "20px");
+        segundaLinha.getStyle().set("margin-right", "20px");
 
         return segundaLinha;
     }
-
-
-
-
-
 
 
     private VerticalLayout criarCardInformacoes() {
         VerticalLayout card = new VerticalLayout();
         card.setSpacing(false);
 
-        // Título e Parágrafos
         H3 titulo = new H3("Informações");
         Paragraph horario = criarParagrafo("Horário de Funcionamento:");
         Paragraph horario2 = criarParagrafo("Segunda à Sexta: 08:00h às 20:00h");
@@ -210,7 +181,6 @@ public class HomeViewCliente extends VerticalLayout {
         Paragraph horario4 = criarParagrafo("Domingo: Fechado");
         H3 texto = new H3("Contato:");
 
-        // Ícone de telefone + contato
         Icon telefoneIcon = new Icon("vaadin", "phone");
         telefoneIcon.getStyle().set("margin-right", "2px");
         telefoneIcon.setSize("15px");
@@ -218,7 +188,6 @@ public class HomeViewCliente extends VerticalLayout {
         Span contatoTexto = new Span("Telefone: (11) 98765-4321");
         HorizontalLayout contatoLayout = new HorizontalLayout(telefoneIcon, contatoTexto);
         contatoLayout.setAlignItems(Alignment.CENTER);
-
 
         card.add(titulo, horario, horario2, horario3, horario4, texto, contatoLayout);
         card.getStyle().set("border", "1px solid #DDDDDD");
@@ -229,11 +198,13 @@ public class HomeViewCliente extends VerticalLayout {
         return card;
     }
 
+
     private Paragraph criarParagrafo(String texto) {
         Paragraph paragrafo = new Paragraph(texto);
         paragrafo.getStyle().set("margin", "10px 0");
         return paragrafo;
     }
+
 
     private VirtualList<AgendamentoBase> virtualListAgendamentos;
 
@@ -268,14 +239,14 @@ public class HomeViewCliente extends VerticalLayout {
                 cardLayout.setSpacing(false);
                 cardLayout.getStyle().set("border", "1px solid #DDDDDD");
                 cardLayout.getStyle().set("border-radius", "10px");
-                cardLayout.getStyle().set("padding", "15px"); // Aumentar o padding
-                cardLayout.getStyle().set("box-shadow", "0 4px 10px rgba(0, 0, 0, 0.1)"); // Aumentar a sombra
-                cardLayout.getStyle().set("background-color", "#FAFAFA"); // Cor de fundo leve
+                cardLayout.getStyle().set("padding", "15px");
+                cardLayout.getStyle().set("box-shadow", "0 4px 10px rgba(0, 0, 0, 0.1)");
+                cardLayout.getStyle().set("background-color", "#FAFAFA");
                 cardLayout.getStyle().set("margin-bottom", "10px");
 
                 H4 titulo = new H4("Agendamento");
                 titulo.getStyle().set("margin", "0");
-                titulo.getStyle().set("color", "#4A4A4A"); // Cor do texto do título
+                titulo.getStyle().set("color", "#4A4A4A");
                 cardLayout.add(titulo);
 
                 VerticalLayout infoLayout = new VerticalLayout();
@@ -293,10 +264,9 @@ public class HomeViewCliente extends VerticalLayout {
                     infoLayout.add(new Text("Nenhum agendamento encontrado."));
                 }
 
-                // Adiciona estilo ao infoLayout
                 infoLayout.getStyle().set("padding", "15px");
-                infoLayout.getStyle().set("background-color", "#f9f9f9"); // Fundo leve
-                infoLayout.getStyle().set("border-radius", "8px"); // Bordas arredondadas
+                infoLayout.getStyle().set("background-color", "#f9f9f9");
+                infoLayout.getStyle().set("border-radius", "8px");
 
                 cardLayout.add(infoLayout);
                 return cardLayout;
@@ -311,11 +281,11 @@ public class HomeViewCliente extends VerticalLayout {
 
         Span lblLabel = new Span(label);
         lblLabel.getStyle().set("font-weight", "bold");
-        lblLabel.getStyle().set("color", "#555"); // Cor do texto do label
-        lblLabel.getStyle().set("margin-right", "10px"); // Espaçamento à direita do label
+        lblLabel.getStyle().set("color", "#555");
+        lblLabel.getStyle().set("margin-right", "10px");
 
         Span lblValue = new Span(value);
-        lblValue.getStyle().set("color", "#333"); // Cor do texto do valor
+        lblValue.getStyle().set("color", "#333");
 
         linha.add(lblLabel, lblValue);
         return linha;
@@ -344,6 +314,7 @@ public class HomeViewCliente extends VerticalLayout {
         return tabs;
     }
 
+
     private void atualizarConteudo(Tab selectedTab) {
         contentLayout.removeAll();
 
@@ -358,6 +329,7 @@ public class HomeViewCliente extends VerticalLayout {
         }
     }
 
+
     private void mostrarServicos() {
         List<ServicosBase> servicos = servicoService.findAll();
 
@@ -366,12 +338,10 @@ public class HomeViewCliente extends VerticalLayout {
         grid.removeAllColumns();
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COMPACT);
 
-        // Estilizando o grid
         grid.getElement().getStyle().set("border", "1px solid #DDDDDD");
-        grid.getElement().getStyle().set("border-radius", "8px"); // Bordas arredondadas
-        grid.getElement().getStyle().set("overflow", "hidden"); // Ocultar overflow
+        grid.getElement().getStyle().set("border-radius", "8px");
+        grid.getElement().getStyle().set("overflow", "hidden");
 
-        // Cabeçalhos estilizados
         grid.addColumn(ServicosBase::getNome)
                 .setHeader("Nome do Serviço:")
                 .setSortable(true)
@@ -384,7 +354,6 @@ public class HomeViewCliente extends VerticalLayout {
                 .setFlexGrow(1)
                 .setHeader(getHeader("Descrição:"));
 
-        // Formatação de preços com NumberFormat
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
         grid.addColumn(new TextRenderer<>(servico -> currencyFormat.format(servico.getPreco())))
                 .setHeader("Preço (R$)")
@@ -394,6 +363,7 @@ public class HomeViewCliente extends VerticalLayout {
         contentLayout.add(grid);
     }
 
+
     private void mostrarColaboradores() {
         List<Colaborador> colaboradores = colaboradorService.findAll();
 
@@ -402,12 +372,10 @@ public class HomeViewCliente extends VerticalLayout {
         grid.removeAllColumns();
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COMPACT);
 
-        // Estilizando o grid
         grid.getElement().getStyle().set("border", "1px solid #DDDDDD");
-        grid.getElement().getStyle().set("border-radius", "8px"); // Bordas arredondadas
-        grid.getElement().getStyle().set("overflow", "hidden"); // Ocultar overflow
+        grid.getElement().getStyle().set("border-radius", "8px");
+        grid.getElement().getStyle().set("overflow", "hidden");
 
-        // Cabeçalhos estilizados
         grid.addColumn(Colaborador::getNome)
                 .setHeader("Nome")
                 .setSortable(true)
@@ -429,16 +397,15 @@ public class HomeViewCliente extends VerticalLayout {
         contentLayout.add(grid);
     }
 
-    // Método para estilizar cabeçalhos
+
     private Component getHeader(String text) {
         Span span = new Span(text);
-        span.getElement().getStyle().set("font-weight", "bold"); // Texto em negrito
-        span.getElement().getStyle().set("color", "#333333"); // Cor do texto
-        span.getElement().getStyle().set("background-color", "#f8f9fa"); // Fundo do cabeçalho
-        span.getElement().getStyle().set("padding", "10px"); // Padding
+        span.getElement().getStyle().set("font-weight", "bold");
+        span.getElement().getStyle().set("color", "#333333");
+        span.getElement().getStyle().set("background-color", "#f8f9fa");
+        span.getElement().getStyle().set("padding", "10px");
         return span;
     }
-
 
 
     private void mostrarLocalizacao() {

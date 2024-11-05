@@ -5,7 +5,7 @@ import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.domainBase.domain.ClienteSession;
 import br.com.atlas.bigodeira.backend.service.AuthService;
 import br.com.atlas.bigodeira.backend.service.ClienteService;
-import br.com.atlas.bigodeira.view.cliente.CadastroClienteView; // Importar as views
+import br.com.atlas.bigodeira.view.cliente.CadastroClienteView;
 import br.com.atlas.bigodeira.view.cliente.HomeViewCliente;
 import br.com.atlas.bigodeira.view.cliente.NovoAgendamentoClienteView;
 import com.vaadin.flow.component.Component;
@@ -13,7 +13,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -21,15 +20,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLayout;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.Optional;
-
-
 
 @PageTitle("Main Layout")
 public class MainLayoutCliente extends AppLayout implements RouterLayout {
@@ -51,6 +47,7 @@ public class MainLayoutCliente extends AppLayout implements RouterLayout {
         HorizontalLayout navigation = getNavigation();
         addToNavbar(titleImage, navigation);
     }
+
 
     private HorizontalLayout getNavigation() {
         HorizontalLayout navigation = new HorizontalLayout();
@@ -104,6 +101,7 @@ public class MainLayoutCliente extends AppLayout implements RouterLayout {
         return link;
     }
 
+
     private void abrirPopupLogin() {
         Dialog loginDialog = new Dialog();
         loginDialog.setWidth("300px");
@@ -129,6 +127,7 @@ public class MainLayoutCliente extends AppLayout implements RouterLayout {
 
         loginDialog.open();
     }
+
 
     private HorizontalLayout getHorizontalLayout(TextField emailField, PasswordField passwordField, Dialog loginDialog) {
         Button loginButton = new Button("Entrar", event -> {
@@ -156,8 +155,7 @@ public class MainLayoutCliente extends AppLayout implements RouterLayout {
 
         Button cancelButton = new Button("Cancelar", event -> loginDialog.close());
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, cancelButton);
-        return buttonLayout;
+        return new HorizontalLayout(loginButton, cancelButton);
     }
 
 

@@ -1,7 +1,5 @@
 package br.com.atlas.bigodeira.view.cliente;
 
-
-
 import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
@@ -45,6 +43,7 @@ public class NovoAgendamentoClienteView extends VerticalLayout {
         this.serviceBase = serviceBase;
         setupUI();
     }
+
 
     private void setupUI() {
         ComboBox<Colaborador> colaboradorComboBox = new ComboBox<>("Selecione o Colaborador");
@@ -127,9 +126,11 @@ public class NovoAgendamentoClienteView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.START);
     }
 
+
     private Long obterIdClienteLogado() {
         return ClienteSession.getInstance().getClienteLogadoId();
     }
+
 
     private void clearFields(ComboBox<Colaborador> colaboradorComboBox, DatePicker dataPicker,
                              ComboBox<LocalTime> horarioComboBox, ComboBox<ServicosBase> servicoComboBox) {

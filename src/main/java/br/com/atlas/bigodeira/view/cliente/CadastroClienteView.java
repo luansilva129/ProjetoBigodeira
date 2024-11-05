@@ -37,6 +37,7 @@ public class CadastroClienteView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.START);
     }
 
+
     private void criarFormulario() {
         nomeField = new TextField("Nome");
         emailField = new TextField("Email");
@@ -45,7 +46,7 @@ public class CadastroClienteView extends VerticalLayout {
         telefoneField.setPlaceholder("(xx)xxxxx-xxxx");
 
         telefoneField.addValueChangeListener(event -> {
-            String formattedValue = formatarTelefone(event.getValue());
+            String formattedValue = clienteService.formatarTelefone(event.getValue());
             telefoneField.setValue(formattedValue);
         });
 
@@ -65,24 +66,14 @@ public class CadastroClienteView extends VerticalLayout {
         add(layout);
     }
 
-    private String formatarTelefone(String value) {
-        String numbers = value.replaceAll("[^0-9]", "");
-
-        if (numbers.length() <= 2) {
-            return "(" + numbers;
-        } else if (numbers.length() <= 7) {
-            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2);
-        } else {
-            return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2, 7) + "-" + numbers.substring(7);
-        }
-    }
 
     private void cadastrarCliente() {
         String nome = nomeField.getValue();
         String email = emailField.getValue();
         String senha = senhaField.getValue();
+        String telefone = telefoneField.getValue();
 
-        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty()) {
+        if (nome.isEmpty() || email.isEmpty() || senha.isEmpty() || telefone.isEmpty()) {
             Notification.show("Por favor, preencha todos os campos.", 3000, Notification.Position.MIDDLE);
             return;
         }
