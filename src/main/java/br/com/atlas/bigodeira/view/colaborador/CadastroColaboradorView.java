@@ -3,7 +3,7 @@ package br.com.atlas.bigodeira.view.colaborador;
 import br.com.atlas.bigodeira.backend.controller.colaborador.CadastrarColaboradorController;
 import br.com.atlas.bigodeira.backend.domainBase.ServicosBase;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Colaborador;
-import br.com.atlas.bigodeira.backend.service.ColaboradorService; // Importar seu serviço de colaboradores
+import br.com.atlas.bigodeira.backend.service.ColaboradorService;
 import br.com.atlas.bigodeira.backend.service.ServicoService;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -19,6 +19,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,15 +59,18 @@ public class CadastroColaboradorView extends VerticalLayout {
 
         List<ServicosBase> servicos = servicoService.findAll();
         List<String> nomeServicos = new ArrayList<>();
-        servicos.forEach(servico -> {
-            nomeServicos.add(servico.getNome());
-        });
+        servicos.forEach(servico -> nomeServicos.add(servico.getNome()));
         especialidadeSelect.setItems(nomeServicos);
 
         TimePicker horaInicio = new TimePicker("Horário de Início");
+        horaInicio.setMin(LocalTime.of(8, 0));
+        horaInicio.setMax(LocalTime.of(22, 0));
         horaInicio.setWidthFull();
 
         TimePicker horaFim = new TimePicker("Horário de Fim");
+        horaFim.setMin(LocalTime.of(8, 0));
+        horaInicio.addValueChangeListener(e -> horaFim.setMin(horaInicio.getValue()));
+        horaFim.setMax(LocalTime.of(22, 0));
         horaFim.setWidthFull();
 
         MultiSelectComboBox<String> diasSelect = new MultiSelectComboBox<>("Dias Disponíveis");
@@ -100,7 +104,7 @@ public class CadastroColaboradorView extends VerticalLayout {
 
                 nomeField.clear();
                 cpfField.clear();
-                especialidadeSelect.clear();
+                especialidadeSelect.clear(); //Multi select box e time pickers não estão limpando
                 horaInicio.clear();
                 horaFim.clear();
                 diasSelect.clear();

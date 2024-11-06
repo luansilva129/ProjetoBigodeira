@@ -6,41 +6,31 @@ Cypress.Commands.add('formServico', (nome, descricao, preco) => {
     cy.get('vaadin-button').click() // Botão Confirmar
 })
 
+Cypress.Commands.add('formCadastoCliente', (nome, email, telefone) => {
+    cy.get('#input-vaadin-text-field-13').type(nome)
+    cy.get('#input-vaadin-email-field-14').type(email)
+    cy.get('#input-vaadin-text-field-17').type(telefone)
+    cy.get('vaadin-button').click()
+})
 
-/// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+Cypress.Commands.add('formCadastoColaborador', (nome, cpf, selectEspecialidade, horaInicio, horaFim, selectDias) => {
+    cy.get('#input-vaadin-text-field-19').type(nome)
+    cy.get('#input-vaadin-text-field-20').type(cpf)
+    if (selectEspecialidade === true) {
+        cy.get('#input-vaadin-multi-select-combo-box-22').click()
+        cy.contains('Corte').click()
+        cy.contains('Platinar').click()
+        cy.get('html').click() //Clica na tela para tirar a seleção do combo box
+    }
+    cy.get('#input-vaadin-time-picker-24').type(horaInicio)
+    cy.get('html').click({force:true})
+    cy.get('#input-vaadin-time-picker-26').type(horaFim)
+    cy.get('html').click()
+    if (selectDias === true) {
+        cy.get('#input-vaadin-multi-select-combo-box-28').click()
+        cy.contains('Segunda-feira').click()
+        cy.contains('Terça-feira').click()
+        cy.get('html').click()
+    }
+    cy.get('vaadin-button').click()
+})
