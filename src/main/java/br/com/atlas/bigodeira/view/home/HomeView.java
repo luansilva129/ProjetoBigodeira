@@ -19,7 +19,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 @PageTitle("Home / Dashboard")
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "dashboard", layout = MainLayout.class)
 @RouteAlias(value = "home", layout = MainLayout.class)
 public class HomeView extends HorizontalLayout {
     public HomeView() {

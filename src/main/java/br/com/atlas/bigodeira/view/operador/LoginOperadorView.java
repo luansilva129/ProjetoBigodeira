@@ -9,7 +9,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
-@Route("login-operador")
+@Route("")
 public class LoginOperadorView extends VerticalLayout {
 
     private final OperadorController operadorController;
@@ -31,7 +31,7 @@ public class LoginOperadorView extends VerticalLayout {
 
             boolean autenticado = operadorController.autenticarOperador(email, senha);
             if (autenticado) {
-                Notification.show("Login realizado com sucesso!", 3000, Notification.Position.MIDDLE);
+                Notification.show("Login realizado com sucesso!");
 
                 getUI().ifPresent(ui -> ui.navigate("dashboard"));
             } else {
