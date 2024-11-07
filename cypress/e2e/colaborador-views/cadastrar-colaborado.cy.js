@@ -12,7 +12,7 @@ describe('Página cadastro colaborador', {includeShadowDom:true},() => {
             "10:00", "18", true)
 
         cy.contains('Colaborador cadastrado com sucesso!').should('be.visible')
-        cy.wait(5000)
+        cy.wait(3000)
     })
 
     it('Não preenche os campos e exibe uma mensagem para o usuário', () => {

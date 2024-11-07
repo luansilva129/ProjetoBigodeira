@@ -1,4 +1,3 @@
-#noinspection CucumberUndefinedStep
 Feature: Cadastro de cliente
 
   Cenario: Cadastrar um novo cliente inserindo todas as informações necessárias

@@ -80,9 +80,10 @@ Cypress.Commands.add('formCadastroCliente', (nome, email, senha, telefone) => {
 
 Cypress.Commands.add('formServico', (nome, descricao, preco) => {
     //Preenche todos os campos
-    cy.get('#input-vaadin-text-field-13').type(nome) //Input Serviço
-    cy.get('#input-vaadin-text-field-14').type(descricao) //Input Descrição
-    cy.get('#input-vaadin-number-field-16').type(preco) //Input Preço
+    cy.get('vaadin-vertical-layout > :nth-child(2)').type(nome) //Input Serviço
+    cy.get('vaadin-vertical-layout > :nth-child(3)').type(descricao) //Input Descrição
+    cy.get('vaadin-horizontal-layout > :nth-child(2)').type(preco) //Input Preço
+    cy.wait(3000)
 
     cy.get('vaadin-button').click() // Botão Confirmar
 })

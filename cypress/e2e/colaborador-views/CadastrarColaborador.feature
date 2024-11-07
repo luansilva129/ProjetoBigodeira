@@ -1,4 +1,3 @@
-#noinspection CucumberUndefinedStep
 Feature: Cadastro de colaborador
 
   Cenario: Cadastrar um novo colaborador inserindo todas as informações necessárias
