@@ -4,12 +4,11 @@
   "type": "module",
   "dependencies": {
     "@polymer/polymer": "3.5.1",
-    "@vaadin/board": "24.4.10",
     "@vaadin/bundles": "24.4.10",
-    "@vaadin/charts": "24.4.10",
     "@vaadin/common-frontend": "0.0.19",
     "@vaadin/polymer-legacy-adapter": "24.4.10",
     "@vaadin/react-components": "24.4.10",
+    "@vaadin/react-components-pro": "24.4.10",
     "@vaadin/router": "^2.0.0",
     "@vaadin/vaadin-development-mode-detector": "2.0.7",
     "@vaadin/vaadin-lumo-styles": "24.4.10",
@@ -19,6 +18,7 @@
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
     "lit": "3.1.4",
+    "proj4": "2.11.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "6.26.2"
@@ -48,12 +48,11 @@
   "vaadin": {
     "dependencies": {
       "@polymer/polymer": "3.5.1",
-      "@vaadin/board": "24.4.10",
       "@vaadin/bundles": "24.4.10",
-      "@vaadin/charts": "24.4.10",
       "@vaadin/common-frontend": "0.0.19",
       "@vaadin/polymer-legacy-adapter": "24.4.10",
       "@vaadin/react-components": "24.4.10",
+      "@vaadin/react-components-pro": "24.4.10",
       "@vaadin/router": "1.7.5",
       "@vaadin/vaadin-development-mode-detector": "2.0.7",
       "@vaadin/vaadin-lumo-styles": "24.4.10",
@@ -63,6 +62,7 @@
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
       "lit": "3.1.4",
+      "proj4": "2.11.0",
       "react": "18.3.1",
       "react-dom": "18.3.1",
       "react-router-dom": "6.26.2"
@@ -87,7 +87,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "cce4d86ce794cdf6ff5e21552e3072ccb1892dc2862bd673611d49746d0d4746"
+    "hash": "b721b3c070dc81984651de4db01f0c85cd59077749797b365eb68fea69469615"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -107,7 +107,7 @@
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
     "@vaadin/vaadin-lumo-styles": "$@vaadin/vaadin-lumo-styles",
     "@vaadin/vaadin-material-styles": "$@vaadin/vaadin-material-styles",
-    "@vaadin/board": "$@vaadin/board",
-    "@vaadin/charts": "$@vaadin/charts"
+    "@vaadin/react-components-pro": "$@vaadin/react-components-pro",
+    "proj4": "$proj4"
   }
 }

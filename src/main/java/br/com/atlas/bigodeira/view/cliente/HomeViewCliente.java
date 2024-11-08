@@ -12,6 +12,9 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.map.Map;
+import com.vaadin.flow.component.map.configuration.Coordinate;
+import com.vaadin.flow.component.map.configuration.feature.MarkerFeature;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -409,9 +412,18 @@ public class HomeViewCliente extends VerticalLayout {
 
 
     private void mostrarLocalizacao() {
-        Image mapaImagem = new Image("https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2024/02/google-maps-e1707316052388.png?w=1200&h=900&crop=1", "Mapa");
-        mapaImagem.setWidth("100%");
+        Span infoLocal = new Span("Av. Sen. Salgado Filho, 1610 - Lagoa Nova, Natal - RN, 59056-000");
 
-        contentLayout.add(mapaImagem);
+        Map map = new Map();
+
+        Coordinate coordinate = new Coordinate(-35.20607148523244, -5.814012374143551);
+        map.setCenter(coordinate);
+        map.setZoom(16);
+
+        MarkerFeature localMarker = new MarkerFeature(coordinate);
+        localMarker.setText("Barbearia");
+        map.getFeatureLayer().addFeature(localMarker);
+
+        contentLayout.add(infoLocal, map);
     }
 }
