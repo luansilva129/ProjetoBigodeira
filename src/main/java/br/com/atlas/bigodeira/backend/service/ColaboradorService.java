@@ -17,5 +17,7 @@ public class ColaboradorService {
         return colaboradorRepository.findAll();
     }
 
-
+    public String count() {
+        return String.valueOf(colaboradorRepository.count());
+    }
 }

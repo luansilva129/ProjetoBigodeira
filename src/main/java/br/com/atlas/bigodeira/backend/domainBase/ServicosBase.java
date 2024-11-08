@@ -17,4 +17,5 @@ public class ServicosBase extends EntidadeBase {
     public String toString() {
         return nome;
     }
+
 }

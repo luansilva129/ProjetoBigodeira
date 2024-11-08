@@ -17,4 +17,8 @@ public class ServicoService {
     public List<ServicosBase> findAll() {
         return servicosRepository.findAll();
     }
+
+    public String count() {
+        return String.valueOf(servicosRepository.count());
+    }
 }

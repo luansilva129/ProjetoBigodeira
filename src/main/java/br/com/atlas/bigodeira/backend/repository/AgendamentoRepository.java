@@ -28,4 +28,10 @@ public interface AgendamentoRepository extends JpaRepository<AgendamentoBase, Lo
             @Param("colaboradorName") String colaboradorName,
             @Param("status") String status
     );
+
+    @Query("SELECT COUNT(a) FROM AgendamentoBase a WHERE a.status = :status")
+    long countByStatus(@Param("status") String status);
+
+    @Query("SELECT a FROM AgendamentoBase a WHERE a.status = :status")
+    String agendamentosAguardando(@Param("status") String status);
 }

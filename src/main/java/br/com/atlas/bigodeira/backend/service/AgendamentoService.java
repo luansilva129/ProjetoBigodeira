@@ -71,6 +71,13 @@ public class AgendamentoService {
         return agendamentoRepository.filterAgendamentos(clienteName, colaboradorName, status);
     }
 
+    public String count() {
+        return String.valueOf(agendamentoRepository.countByStatus("CONFIRMADO"));
+    }
+
+    public String VerificaAguardando() {
+        return agendamentoRepository.agendamentosAguardando("AGUARDANDO");
+    }
 
 
 }

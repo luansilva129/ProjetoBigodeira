@@ -1,5 +1,7 @@
 package br.com.atlas.bigodeira.view.home;
 
+import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
+import br.com.atlas.bigodeira.backend.service.*;
 import br.com.atlas.bigodeira.view.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.board.Board;
@@ -17,20 +19,41 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import org.springframework.beans.factory.annotation.Autowired;
+import br.com.atlas.bigodeira.backend.service.AgendamentoService;
+import java.util.List;
 
 @PageTitle("Home / Dashboard")
 @Route(value = "dashboard", layout = MainLayout.class)
 @RouteAlias(value = "home", layout = MainLayout.class)
 public class HomeView extends HorizontalLayout {
-    public HomeView() {
+
+
+    private final ColaboradorService colaboradorService;
+    private final ClienteService clienteService;
+    private final AgendamentoService agendamentoService;
+    private final ServicoService servicoService;
+
+    @Autowired
+    public HomeView(ColaboradorService colaboradorService, ClienteService clienteService, AgendamentoService agendamentoService, ServicoService servicoService) {
+        this.colaboradorService = colaboradorService;
+        this.clienteService = clienteService;
+        this.agendamentoService = agendamentoService;
+        this.servicoService = servicoService;
+
         Board board = new Board();
         board.setWidthFull();
         setPadding(true);
 
-        board.addRow(createCards(new Icon(VaadinIcon.CALENDAR), "100", "Agendamentos Realizados"),
-                     createCards(new Icon(VaadinIcon.USER), "10", "Colaboradores Ativos"),
-                     createCards(new Icon(VaadinIcon.USERS), "230", "Clientes Cadastrados"),
-                     createCards(new Icon(VaadinIcon.PENCIL), "12", "Serviços Disponiveis"));
+        String colaboradoresCount = colaboradorService.count();
+        String clientesCount = clienteService.count();
+        String agendamentosCount = agendamentoService.count();
+        String servicosCount = servicoService.count();
+
+        board.addRow(createCards(new Icon(VaadinIcon.CALENDAR), agendamentosCount, "Agendamentos Realizados"),
+                     createCards(new Icon(VaadinIcon.USER), colaboradoresCount, "Colaboradores Ativos"),
+                     createCards(new Icon(VaadinIcon.USERS), clientesCount, "Clientes Cadastrados"),
+                     createCards(new Icon(VaadinIcon.PENCIL), servicosCount, "Serviços Disponiveis"));
         board.addRow(createLineChart()).getStyle().setHeight("auto");
         board.addRow(createColumChart()).getStyle().setHeight("auto");
 
@@ -190,12 +213,10 @@ public class HomeView extends HorizontalLayout {
         H3 titulo = new H3("Agendamentos Próximos");
 
         VerticalLayout cardsAgendamentoContainer = new VerticalLayout(
-                createCardAgendamento("Wanfranklin", "10/10/2024", "12:00"),
-                createCardAgendamento("Wanfranklin", "10/10/2024", "12:00"),
-                createCardAgendamento("Wanfranklin", "10/10/2024", "12:00"),
-                createCardAgendamento("Wanfranklin", "10/10/2024", "12:00"),
-                createCardAgendamento("Wanfranklin", "10/10/2024", "12:00"),
-                createCardAgendamento("Wanfranklin", "10/10/2024", "12:00")
+
+            createCardAgendamento("Wanfranklin" , "10/10/2024", "12:00"),
+            createCardAgendamento("Wanfranklin" , "10/10/2024", "12:00"),
+            createCardAgendamento("Wanfranklin" , "10/10/2024", "12:00")
         );
         cardsAgendamentoContainer.setPadding(false);
         cardsAgendamentoContainer.getStyle().set("gap", "10px");

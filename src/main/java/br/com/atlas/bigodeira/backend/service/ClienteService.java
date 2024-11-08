@@ -44,6 +44,10 @@ public class ClienteService {
         clienteRepository.delete(cliente);
     }
 
+    public String count() {
+        return String.valueOf(clienteRepository.count());
+    }
+
 
     public Cliente findByEmail(String email) {
         Optional<Cliente> clienteOptional = clienteRepository.findByEmail(email);
