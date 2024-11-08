@@ -35,7 +35,6 @@ public class VisualizarAgendamentosView extends VerticalLayout {
     public VisualizarAgendamentosView(AgendamentoService agendamentoService) {
         this.agendamentoService = agendamentoService;
 
-        //Novo agendamento e filtro
         HorizontalLayout headerLayout = new HorizontalLayout();
 
         Button novoServicoButton = new Button("Novo Agendamento");
@@ -51,12 +50,11 @@ public class VisualizarAgendamentosView extends VerticalLayout {
         searchField.addValueChangeListener(event -> filterGrid(event.getValue()));
         headerLayout.add(searchField);
 
-        //Tabela Agendamentos
+
         grid = new Grid<>(AgendamentoBase.class, false);
         loadAgendamentos();
         setHeight("80%");
 
-        //Botões
         HorizontalLayout buttonsLayout = new HorizontalLayout();
 
         Button confirmar = new Button("Confirmar");
@@ -81,7 +79,10 @@ public class VisualizarAgendamentosView extends VerticalLayout {
     }
 
     private void loadAgendamentos() {
-        List<AgendamentoBase> agendamentos = agendamentoService.findAllAgendamentos();
+        List<AgendamentoBase> agendamentos = agendamentoService.findAllAgendamentos().stream()
+                .filter(agendamento -> "AGUARDANDO".equals(agendamento.getStatus())) // Filtra apenas os agendamentos com status "Aguardando"
+                .collect(Collectors.toList());
+
         grid.setItems(agendamentos);
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
 
@@ -134,12 +135,16 @@ public class VisualizarAgendamentosView extends VerticalLayout {
         grid.addColumn(agendamento -> agendamento.getCliente().getTelefone()).setHeader("Contato").setAutoWidth(true);
     }
 
+
     private void filterGrid(String searchTerm) {
         List<AgendamentoBase> filteredList = agendamentoService.findAllAgendamentos().stream()
+                .filter(agendamento -> "AGUARDANDO".equals(agendamento.getStatus()))
                 .filter(agendamento -> agendamento.getCliente().getNome().toLowerCase().contains(searchTerm.toLowerCase()))
                 .collect(Collectors.toList());
+
         grid.setItems(filteredList);
     }
+
 
     private void confirmarAgendamento(Set<AgendamentoBase> selecionados) {
         if (selecionados.isEmpty()) {
@@ -171,8 +176,12 @@ public class VisualizarAgendamentosView extends VerticalLayout {
         }
     }
 
-    // Método para atualizar os itens do grid
     private void refreshGrid(Grid<AgendamentoBase> grid) {
-        grid.setItems(agendamentoService.findAllAgendamentos());
+        List<AgendamentoBase> filteredList = agendamentoService.findAllAgendamentos().stream()
+                .filter(agendamento -> "AGUARDANDO".equals(agendamento.getStatus()))
+                .collect(Collectors.toList());
+
+        grid.setItems(filteredList);
     }
+
 }

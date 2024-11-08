@@ -1,168 +1,167 @@
 package br.com.atlas.bigodeira.view.acessos;
 
-import br.com.atlas.bigodeira.backend.domainBase.AcessoBase;
-import br.com.atlas.bigodeira.backend.service.AcessosService;
+import br.com.atlas.bigodeira.backend.controller.agendamento.AgendamentoController;
+import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
+import br.com.atlas.bigodeira.backend.service.AgendamentoService;
 import br.com.atlas.bigodeira.view.MainLayout;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.HeaderRow;
-import com.vaadin.flow.component.grid.dataview.GridListDataView;
-import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.textfield.TextFieldVariant;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.List;
-import java.util.function.Consumer;
 
 @PageTitle("Consulta de Acessos")
 @Route(value = "acessos", layout = MainLayout.class)
 public class AcessosView extends VerticalLayout {
 
-    private final Grid<AcessoBase> grid;
-    private final AcessosService acessosService;
+    private final Grid<AgendamentoBase> grid;
+    private final AgendamentoController agendamentoController;
 
-    public AcessosView(AcessosService acessosService) {
-        this.acessosService = acessosService;
+    public AcessosView(AgendamentoController agendamentoController) {
+        this.agendamentoController = agendamentoController;
 
-        grid = new Grid<>(AcessoBase.class, false);
-        loadAcessos();
+        HorizontalLayout headerLayout = new HorizontalLayout();
+
+        TextField procurarCliente = new TextField();
+        procurarCliente.setPlaceholder("Cliente");
+        procurarCliente.setSuffixComponent(VaadinIcon.SEARCH.create());
+        procurarCliente.addValueChangeListener(event -> filterGridByCliente(event.getValue()));
+        headerLayout.add(procurarCliente);
+
+        TextField procurarColaborador = new TextField();
+        procurarColaborador.setPlaceholder("Colaborador");
+        procurarColaborador.setSuffixComponent(VaadinIcon.SEARCH.create());
+        procurarColaborador.addValueChangeListener(event -> filterGridByColaborador(event.getValue()));
+        headerLayout.add(procurarColaborador);
+
+        ComboBox<String> statusComboBox = new ComboBox<>();
+        statusComboBox.setPlaceholder("Status");
+        statusComboBox.setItems("CONFIRMADO", "CANCELADO" , "TUDO");
+        statusComboBox.addValueChangeListener(event -> {
+            String selectedStatus = event.getValue();
+            filterGridByStatus(selectedStatus);
+        });
+        headerLayout.add(statusComboBox);
+
+
+        headerLayout.setWidthFull();
+        headerLayout.setJustifyContentMode(JustifyContentMode.START);
+        headerLayout.setAlignItems(Alignment.CENTER);
+
+
+        headerLayout.setSpacing(true);
+        headerLayout.setPadding(true);
+
+        add(headerLayout);
+
+        grid = new Grid<>(AgendamentoBase.class, false);
+        loadAgendamentos();
         setHeight("80%");
 
-        add(grid);
+        grid.setSelectionMode(Grid.SelectionMode.NONE);
 
-        //TEMPORARIO
-        Button deletarTudo = new Button("LIMPAR (BOTÃO TEMPORARIO)", event -> acessosService.deletarAcessos());
-        add(deletarTudo);
+        grid.addColumn(agendamento -> agendamento.getCliente().getNome())
+                .setHeader("Nome")
+                .setSortable(true)
+                .setAutoWidth(true)
+                .setKey("nome");
+
+        grid.addColumn(agendamento -> agendamento.getServicosBase().getNome())
+                .setHeader("Serviço")
+                .setSortable(true)
+                .setAutoWidth(true)
+                .setKey("servico");
+
+        grid.addColumn(agendamento -> agendamento.getColaborador().getNome())
+                .setHeader("Profissional Responsável")
+                .setSortable(true)
+                .setAutoWidth(true)
+                .setKey("colaborador");
+
+        grid.addComponentColumn(agendamento -> {
+                    DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                    LocalDate data = agendamento.getData();
+                    String hora = agendamento.getHorario().toString();
+
+                    String formattedData = formatterData.format(data);
+                    String dataHora = formattedData + " " + hora;
+                    return new Span(dataHora);
+                }).setHeader("Data/Horário")
+                .setAutoWidth(true);
+
+        grid.addComponentColumn(agendamento -> {
+                    HorizontalLayout statusLayout = new HorizontalLayout();
+                    statusLayout.setWidthFull();
+                    statusLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+
+                    Span status = new Span(agendamento.getStatus());
+                    status.getStyle().setPadding("4px");
+                    status.getStyle().setColor("white");
+                    status.setMinWidth("125px");
+                    status.getStyle().setBorderRadius("8px");
+
+                    switch (agendamento.getStatus()) {
+                        case "AGUARDANDO":
+                            status.getStyle().set("background-color", "#EFBF14");
+                            break;
+                        case "CONFIRMADO":
+                            status.getStyle().set("background-color", "#22C55E");
+                            break;
+                        case "CANCELADO":
+                            status.getStyle().set("background-color", "#EB3B3B");
+                            break;
+                        default:
+                            statusLayout.getStyle().set("background-color", "black");
+                    }
+
+                    statusLayout.add(status);
+                    return statusLayout;
+                }).setHeader("Status")
+                .setSortable(true)
+                .setComparator(AgendamentoBase::getStatus)
+                .setTextAlign(ColumnTextAlign.CENTER)
+                .setAutoWidth(true);
+
+        grid.addColumn(agendamento -> agendamento.getCliente().getTelefone())
+                .setHeader("Contato")
+                .setAutoWidth(true);
+
+        add(headerLayout, grid);
     }
 
-    private void loadAcessos() {
-        List<AcessoBase> acessos = acessosService.findAll();
-        GridListDataView<AcessoBase> dataView = grid.setItems(acessos);
-        AcessosFilter acessosFilter = new AcessosFilter(dataView);
-
-        Grid.Column<AcessoBase> idColum = grid.addColumn(AcessoBase::getId);
-
-        Grid.Column<AcessoBase> dataHoraColum = grid.addColumn(new LocalDateTimeRenderer<>(
-                AcessoBase::getCreateDate,
-                () -> DateTimeFormatter.ofLocalizedDateTime(
-                        FormatStyle.SHORT,
-                        FormatStyle.MEDIUM)));
-
-        Grid.Column<AcessoBase> acaoColum = grid.addColumn(AcessoBase::getAcao);
-
-        Grid.Column<AcessoBase> statusColum = grid.addComponentColumn(acessoBase ->{
-            HorizontalLayout statusLayout = new HorizontalLayout();
-            Span status = new Span(acessoBase.getStatus());
-            status.getStyle().setPadding("4px");
-            status.getStyle().setColor("white");
-
-            statusLayout.add(status);
-            statusLayout.setWidth("30%");
-            statusLayout.getStyle().setBorderRadius("8px");
-            statusLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-
-            switch (acessoBase.getStatus()) {
-                case "CONCLUIDO":
-                    statusLayout.getStyle().set("background-color", "#22C55E");
-                    break;
-                case "CANCELADO":
-                    statusLayout.getStyle().set("background-color", "#EB3B3B");
-                    break;
-                default:
-                    statusLayout.getStyle().set("background-color", "black");
-            }
-
-            return statusLayout;
-        });
-
-        HeaderRow headerRow = grid.appendHeaderRow();
-
-        headerRow.getCell(idColum).setComponent(
-                createFilterHeader("Código Acesso", acessosFilter::setId));
-        headerRow.getCell(dataHoraColum).setComponent(
-                createFilterHeader("Data/Horário", acessosFilter::setDataHorario));
-        headerRow.getCell(acaoColum).setComponent(
-                createFilterHeader("Ação", acessosFilter::setAcao));
-        headerRow.getCell(statusColum).setComponent(
-                createFilterHeader("Status", acessosFilter::setStatus));
+    private void loadAgendamentos() {
+        List<AgendamentoBase> agendamentos = agendamentoController.getAgendamentos();
+        grid.setItems(agendamentos); // Carrega os agendamentos no grid
     }
 
-    private static Component createFilterHeader(String labelText, Consumer<String> filterChangeConsumer) {
-        NativeLabel label = new NativeLabel(labelText);
-        label.getStyle().set("padding-top", "var(--lumo-space-m)").set("font-size", "var(--lumo-font-size-s)");
 
-        TextField textField = new TextField();
-        textField.setValueChangeMode(ValueChangeMode.EAGER);
-        textField.setClearButtonVisible(true);
-        textField.addThemeVariants(TextFieldVariant.LUMO_SMALL);
-        textField.setWidthFull();
-        textField.getStyle().set("max-width", "100%");
-        textField.addValueChangeListener(e -> filterChangeConsumer.accept(e.getValue()));
-
-        VerticalLayout layout = new VerticalLayout(label, textField);
-        layout.getThemeList().clear();
-
-        return layout;
+    private void filterGridByCliente(String clienteName) {
+        List<AgendamentoBase> filteredList = agendamentoController.getAgendamentosByCliente(clienteName);
+        grid.setItems(filteredList); // Atualiza o grid com os dados filtrados
     }
 
-    private static class AcessosFilter {
-        private final GridListDataView<AcessoBase> dataView;
-
-        private String id;
-        private String dataHorario;
-        private String acao;
-        private String status;
-
-        public AcessosFilter(GridListDataView<AcessoBase> dataView) {
-            this.dataView = dataView;
-            this.dataView.addFilter(this::test);
-        }
-
-        public void setId(String id) {
-            this.id = id;
-            this.dataView.refreshAll();
-        }
-
-        public void setDataHorario(String dataHorario) {
-            this.dataHorario = dataHorario;
-            this.dataView.refreshAll();
-        }
-
-        public void setAcao(String acao) {
-            this.acao = acao;
-            this.dataView.refreshAll();
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-            this.dataView.refreshAll();
-        }
-
-        public boolean test(AcessoBase acessoBase) {
-            String idAcesso = acessoBase.getId().toString();
-            String dataHoraAcesso = acessoBase.getCreateDate().toString();
-
-            boolean matchesId = matches(idAcesso, id);
-            boolean matchesDataHora = matches(dataHoraAcesso, dataHorario);
-            boolean matchesAcao = matches(acessoBase.getAcao(), acao);
-            boolean matchesStatus = matches(acessoBase.getStatus(), status);
-
-            return matchesId && matchesDataHora && matchesAcao && matchesStatus;
-        }
-
-        private boolean matches(String value, String searchTerm) {
-            return searchTerm == null || searchTerm.isEmpty()
-                    || value.toLowerCase().contains(searchTerm.toLowerCase());
-        }
+    private void filterGridByColaborador(String colaboradorName) {
+        List<AgendamentoBase> filteredList = agendamentoController.getAgendamentosByColaborador(colaboradorName);
+        grid.setItems(filteredList); // Atualiza o grid com os dados filtrados
     }
+
+    private void filterGridByStatus(String status) {
+        List<AgendamentoBase> filteredList = agendamentoController.getAgendamentosByStatus(status);
+        grid.setItems(filteredList);
+    }
+
+
+
 }
+
+
