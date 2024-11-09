@@ -54,5 +54,6 @@ public class AgendamentoBase extends EntidadeBase {
     }
 
     public void setClienteNome(String s) {
+
     }
 }
