@@ -44,4 +44,15 @@ public class AgendamentoBase extends EntidadeBase {
     public AgendamentoBase() {
 
     }
+
+    public void setNome(String testeAgendamento) {
+
+    }
+
+    public void setClienteId(long l) {
+
+    }
+
+    public void setClienteNome(String s) {
+    }
 }

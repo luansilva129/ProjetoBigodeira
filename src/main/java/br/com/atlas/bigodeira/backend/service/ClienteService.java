@@ -1,6 +1,7 @@
 package br.com.atlas.bigodeira.backend.service;
 
 
+import br.com.atlas.bigodeira.backend.domainBase.AgendamentoBase;
 import br.com.atlas.bigodeira.backend.domainBase.domain.Cliente;
 import br.com.atlas.bigodeira.backend.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,5 @@ public class ClienteService {
             return "(" + numbers.substring(0, 2) + ")" + numbers.substring(2, 7) + "-" + numbers.substring(7);
         }
     }
-
 
 }
